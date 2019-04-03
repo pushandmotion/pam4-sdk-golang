@@ -1,0 +1,3 @@
+.PHONY: test
+test:
+	source .env_test && go test ./...

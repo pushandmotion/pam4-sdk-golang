@@ -1,0 +1,12 @@
+package: github.com/pam4sdk
+import:
+- package: github.com/3dsinteractive/gorequest
+  version: ^0.2.16
+- package: github.com/3dsinteractive/testify
+  version: ^1.2.2
+  subpackages:
+  - mock
+- package: github.com/Sirupsen/logrus
+  version: ^1.4.1
+- package: github.com/3dsinteractive/jason
+  version: ^1.0.0
