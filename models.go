@@ -13,5 +13,6 @@ type Tracker struct {
 	UTMContent  string                 `json:"utm_content"`
 	UTMMedium   string                 `json:"utm_medium"`
 	UTMSource   string                 `json:"utm_source"`
+	IPAddress   string                 `json:"ip_address"`
 	FormFields  map[string]interface{} `json:"form_fields"`
 }

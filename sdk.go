@@ -44,7 +44,7 @@ func (sdk *Sdk) SendEvent(contactID string, campaignID string, tracker *Tracker)
 	p := map[string]interface{}{}
 	json.Unmarshal([]byte(js), &p)
 	if len(campaignID) > 0 {
-		p["_campaign_id"] = campaignID
+		p["_campaign"] = campaignID
 	}
 
 	c := []*http.Cookie{
