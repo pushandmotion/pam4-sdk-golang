@@ -40,12 +40,16 @@ func NewSdkR(rq IRequester, logger ILogger) *Sdk {
 // SendEvent post tracker event to PAM
 func (sdk *Sdk) SendEvent(contactID string, campaignID string, tracker *Tracker) (string, error) {
 
+	if tracker.FormFields == nil {
+		tracker.FormFields = make(map[string]interface{})
+	}
+	if len(campaignID) > 0 {
+		tracker.FormFields["_campaign"] = campaignID
+	}
+
 	js, _ := json.Marshal(tracker)
 	p := map[string]interface{}{}
 	json.Unmarshal([]byte(js), &p)
-	if len(campaignID) > 0 {
-		p["_campaign"] = campaignID
-	}
 
 	c := []*http.Cookie{
 		&http.Cookie{

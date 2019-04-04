@@ -21,7 +21,6 @@ func (ts *SdkTestSute) TestSendEvent_GivenEventWithParams_ExpectEventSent() {
 	mockLogger := NewMockLogger()
 
 	p := map[string]interface{}{
-		"_campaign":    "campaign_123",
 		"event":        "event_1234",
 		"page_url":     "page url 1234",
 		"page_title":   "page title 1234",
@@ -35,6 +34,7 @@ func (ts *SdkTestSute) TestSendEvent_GivenEventWithParams_ExpectEventSent() {
 		"utm_source":   "utm source 1234",
 		"ip_address":   "10.10.10.10",
 		"form_fields": map[string]interface{}{
+			"_campaign":     "campaign_123",
 			"custom-field1": "custom-value1",
 			"custom-field2": "custom-value2",
 		},
