@@ -76,3 +76,22 @@ func (ts *SdkTestSute) TestSendEvent_GivenEventWithParams_ExpectEventSent() {
 		mockRq.AssertExpectations(ts.T())
 	}
 }
+
+func (ts *SdkTestSute) TestProductTrends_GiveLimit_ExpectRequestSentWithLimit() {
+	mockRq := NewMockRequester()
+	mockLogger := NewMockLogger()
+	sdk := NewSdkR(mockRq, mockLogger)
+
+	p := map[string]string{
+		"limit": "400",
+	}
+	mockRq.On("Get", "/api/products/trends", p).Return("response_1234", nil)
+
+	res, err := sdk.ProductTrends(400)
+
+	is := assert.New(ts.T())
+	if is.NoError(err) {
+		is.Equal("response_1234", res)
+		mockRq.AssertExpectations(ts.T())
+	}
+}

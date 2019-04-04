@@ -19,7 +19,7 @@ func TestSdkE2ETestSute(t *testing.T) {
 }
 
 func (ts *SdkE2ETestSute) TestSendEvent_GivenParams_ExpectSendToPAM() {
-	sdk := NewSdk("https://baseurl", "key", "secret")
+	sdk := NewSdk("https://connect.pushandmotion.com", "key", "secret")
 	tracker := &Tracker{
 		Event: "event-sample",
 		FormFields: map[string]interface{}{
@@ -27,6 +27,16 @@ func (ts *SdkE2ETestSute) TestSendEvent_GivenParams_ExpectSendToPAM() {
 		},
 	}
 	res, err := sdk.SendEvent("contact_id", "campaign_id", tracker)
+	is := assert.New(ts.T())
+
+	if is.NoError(err) {
+		fmt.Println(res)
+	}
+}
+
+func (ts *SdkE2ETestSute) TestProductsTrends_GivenLimit_ExpectReturnProducts() {
+	sdk := NewSdk("https://connect.pushandmotion.com", "key", "secret")
+	res, err := sdk.ProductTrends(500)
 	is := assert.New(ts.T())
 
 	if is.NoError(err) {

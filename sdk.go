@@ -2,6 +2,7 @@ package pam4sdk
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -9,6 +10,7 @@ import (
 // ISdk is interface for PAM client
 type ISdk interface {
 	SendEvent(contactID string, campaignID string, tracker *Tracker) (string, error)
+	ProductTrends(limit int) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -63,4 +65,14 @@ func (sdk *Sdk) SendEvent(contactID string, campaignID string, tracker *Tracker)
 		return "", NewErrorE(sdk.logger, err)
 	}
 	return body, nil
+}
+
+// ProductTrends return product trendings
+func (sdk *Sdk) ProductTrends(limit int) (string, error) {
+	p := map[string]string{}
+	if limit > 0 {
+		p["limit"] = fmt.Sprintf("%v", limit)
+	}
+
+	return sdk.rq.Get("/api/products/trends", p)
 }

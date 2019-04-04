@@ -17,3 +17,9 @@ func (sdk *MockSdk) SendEvent(contactID string, campaignID string, tracker *Trac
 	args := sdk.Called(contactID, campaignID, tracker)
 	return args.String(0), args.Error(1)
 }
+
+// ProductTrends is mock
+func (sdk *MockSdk) ProductTrends(limit int) (string, error) {
+	args := sdk.Called(limit)
+	return args.String(0), args.Error(1)
+}
