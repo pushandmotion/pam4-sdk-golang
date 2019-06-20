@@ -86,7 +86,7 @@ func (sdk *Sdk) ProductRecommends(aiProductRecommendID string, contactID string,
 	}
 
 	if productID > 0 {
-		p["projectId"] = fmt.Sprintf("%v", productID)
+		p["productId"] = fmt.Sprintf("%v", productID)
 	}
 
 	productRecommendsPath := fmt.Sprintf("/api/ai/%s", aiProductRecommendID)
