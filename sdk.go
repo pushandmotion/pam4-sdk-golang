@@ -11,6 +11,7 @@ import (
 type ISdk interface {
 	SendEvent(contactID string, campaignID string, tracker *Tracker) (string, error)
 	ProductTrends(limit int) (string, error)
+	ProductRecommends(aiProductRecommendID string, contactID string, productID int) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -75,4 +76,20 @@ func (sdk *Sdk) ProductTrends(limit int) (string, error) {
 	}
 
 	return sdk.rq.Get("/api/products/trends", p)
+}
+
+// ProductRecommends return product recommends
+func (sdk *Sdk) ProductRecommends(aiProductRecommendID string, contactID string, productID int) (string, error) {
+	p := map[string]string{}
+	if len(contactID) > 0 {
+		p["id"] = fmt.Sprintf("%v", contactID)
+	}
+
+	if productID > 0 {
+		p["projectId"] = fmt.Sprintf("%v", productID)
+	}
+
+	productRecommendsPath := fmt.Sprintf("/api/ai/%s", aiProductRecommendID)
+
+	return sdk.rq.Get(productRecommendsPath, p)
 }
