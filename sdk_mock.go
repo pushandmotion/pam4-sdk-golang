@@ -23,3 +23,9 @@ func (sdk *MockSdk) ProductTrends(limit int) (string, error) {
 	args := sdk.Called(limit)
 	return args.String(0), args.Error(1)
 }
+
+// ProductRecommends is mock
+func (sdk *MockSdk) ProductRecommends(aiID string, contactID string, productID int) (string, error) {
+	args := sdk.Called(aiID, contactID, productID)
+	return args.String(0), args.Error(1)
+}
