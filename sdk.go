@@ -82,7 +82,7 @@ func (sdk *Sdk) ProductTrends(limit int) (string, error) {
 func (sdk *Sdk) ProductRecommends(aiID string, contactID string, productID int) (string, error) {
 	p := map[string]string{}
 	if len(contactID) > 0 {
-		p["id"] = fmt.Sprintf("%v", contactID)
+		p["contact_id"] = fmt.Sprintf("%v", contactID)
 	}
 
 	if productID > 0 {
