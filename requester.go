@@ -124,7 +124,7 @@ func (rqt *Requester) setupCredential(r *gorequest.SuperAgent) *gorequest.SuperA
 	return r
 }
 
-func (rqt *Requester) r() *gorequest.SuperAgent {
+func (rqt *Requester) cloneR() *gorequest.SuperAgent {
 	r := rqt.req
 	if r == nil {
 		r = gorequest.New()
@@ -132,7 +132,7 @@ func (rqt *Requester) r() *gorequest.SuperAgent {
 	}
 	// Timeout is relative to time.Now so we need to set every time
 	r.Timeout(rqt.config.Timeout())
-	return r
+	return r.Clone()
 }
 
 // Get make a GET request
@@ -151,8 +151,7 @@ func (rqt *Requester) GetRH(path string, params map[string]string, headers map[s
 }
 
 func (rqt *Requester) GetRHC(path string, params map[string]string, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error) {
-	r := rqt.r()
-	defer r.ClearSuperAgent()
+	r := rqt.cloneR()
 
 	url := fmt.Sprint(rqt.config.Endpoint(), path)
 	rqt.logger.Debug("[RQT GET]: " + url)
@@ -180,7 +179,7 @@ func (rqt *Requester) GetRHC(path string, params map[string]string, headers map[
 	if len(errs) > 0 {
 		return res, "", NewErrorE(rqt.logger, errs[0])
 	}
-	rqt.logger.Debug(fmt.Sprintf("[RQT GET-RESP]: %s %s", url, body))
+	rqt.logger.Debug(fmt.Sprintf("[RQT GET-RESP]: %s %s", url, rqt.truncateLogBody(body)))
 	if res.StatusCode >= 400 {
 		return res, body, NewErrM(res.Status)
 	}
@@ -203,8 +202,7 @@ func (rqt *Requester) PostRH(path string, params map[string]string, headers map[
 }
 
 func (rqt *Requester) PostRHC(path string, params map[string]string, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error) {
-	r := rqt.r()
-	defer r.ClearSuperAgent()
+	r := rqt.cloneR()
 
 	u := fmt.Sprint(rqt.config.Endpoint(), path)
 	rqt.logger.Debug("[RQT POST]: " + u)
@@ -234,7 +232,7 @@ func (rqt *Requester) PostRHC(path string, params map[string]string, headers map
 	if len(errs) > 0 {
 		return res, "", NewErrorE(rqt.logger, errs[0])
 	}
-	rqt.logger.Debug(fmt.Sprintf("[RQT POST-RESP]: %s %s", u, body))
+	rqt.logger.Debug(fmt.Sprintf("[RQT POST-RESP]: %s %s", u, rqt.truncateLogBody(body)))
 	if res.StatusCode >= 400 {
 		return res, body, NewErrM(res.Status)
 	}
@@ -242,8 +240,7 @@ func (rqt *Requester) PostRHC(path string, params map[string]string, headers map
 }
 
 func (rqt *Requester) PostRaw(path string, data interface{}, headers map[string]string) (*http.Response, string, error) {
-	r := rqt.r()
-	defer r.ClearSuperAgent()
+	r := rqt.cloneR()
 
 	u := fmt.Sprint(rqt.config.Endpoint(), path)
 	rqt.logger.Debug("[RQT POST]: " + u)
@@ -261,7 +258,7 @@ func (rqt *Requester) PostRaw(path string, data interface{}, headers map[string]
 	if len(errs) > 0 {
 		return res, "", NewErrorE(rqt.logger, errs[0])
 	}
-	rqt.logger.Debug(fmt.Sprintf("[RQT POST-RESP]: %s %s", u, body))
+	rqt.logger.Debug(fmt.Sprintf("[RQT POST-RESP]: %s %s", u, rqt.truncateLogBody(body)))
 	if res.StatusCode >= 400 {
 		return res, body, NewErrM(res.Status)
 	}
@@ -269,8 +266,7 @@ func (rqt *Requester) PostRaw(path string, data interface{}, headers map[string]
 }
 
 func (rqt *Requester) PostJSONRHC(path string, jsonBody interface{}, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error) {
-	r := rqt.r()
-	defer r.ClearSuperAgent()
+	r := rqt.cloneR()
 
 	url := fmt.Sprint(rqt.config.Endpoint(), path)
 	rqt.logger.Debug("[RQT POST]: " + url)
@@ -294,10 +290,17 @@ func (rqt *Requester) PostJSONRHC(path string, jsonBody interface{}, headers map
 
 	res, body, errs := r.End()
 	if len(errs) > 0 {
-		return res, body, NewErrM(res.Status)
+		for _, err := range errs {
+			rqt.logger.Debug(fmt.Sprintf("[RQT POST-ERR]: %s", err.Error()))
+		}
+		if res != nil {
+			return res, body, NewErrM(res.Status)
+		} else {
+			return res, body, NewErrM(errs[0].Error())
+		}
 	}
 
-	rqt.logger.Debug(fmt.Sprintf("[RQT POST-RESP]: %s %s", url, body))
+	rqt.logger.Debug(fmt.Sprintf("[RQT POST-RESP]: %s %s", url, rqt.truncateLogBody(body)))
 	return res, body, nil
 }
 
@@ -318,8 +321,7 @@ func (rqt *Requester) PostJSON(path string, jsonBody interface{}) (string, error
 
 // PostFile send file using HTTP POST
 func (rqt *Requester) PostFile(path string, filePath string, postParam string) (string, error) {
-	r := rqt.r()
-	defer r.ClearSuperAgent()
+	r := rqt.cloneR()
 
 	f, err := filepath.Abs(filePath)
 	if err != nil {
@@ -343,9 +345,17 @@ func (rqt *Requester) PostFile(path string, filePath string, postParam string) (
 		}
 		return "", err
 	}
-	rqt.logger.Debug(fmt.Sprintf("[RQT POST-RESP]: %s %s", url, body))
+	rqt.logger.Debug(fmt.Sprintf("[RQT POST-RESP]: %s %s", url, rqt.truncateLogBody(body)))
 	if res.StatusCode >= 400 {
 		return body, NewErrM(res.Status)
 	}
 	return body, nil
+}
+
+func (rqt *Requester) truncateLogBody(body string) string {
+	length := 1000
+	if len(body) > length {
+		return fmt.Sprintf("%s...[resp-truncated]", body[:length-1])
+	}
+	return body
 }
