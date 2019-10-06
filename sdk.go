@@ -22,7 +22,7 @@ type Sdk struct {
 
 // NewSdk create client using default requester and 10 seconds timeout
 func NewSdk(baseURL string, appID string, appSecret string) *Sdk {
-	return NewSdkT(baseURL, appID, appSecret, 10)
+	return NewSdkT(baseURL, appID, appSecret, 10*time.Second)
 }
 
 // NewSdkT create client using default requester with specify timeout
