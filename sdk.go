@@ -20,10 +20,14 @@ type Sdk struct {
 	logger ILogger
 }
 
-// NewSdk create client using default requester
+// NewSdk create client using default requester and 10 seconds timeout
 func NewSdk(baseURL string, appID string, appSecret string) *Sdk {
-	timeout := 3 * time.Second
-	config := NewCustomRequesterConfig(baseURL, "x-app-id", "x-secret", appID, appSecret, timeout)
+	return NewSdkT(baseURL, appID, appSecret, 10)
+}
+
+// NewSdkT create client using default requester with specify timeout
+func NewSdkT(baseURL string, appID string, appSecret string, requestTimeout time.Duration) *Sdk {
+	config := NewCustomRequesterConfig(baseURL, "x-app-id", "x-secret", appID, appSecret, requestTimeout)
 	logger := NewLoggerSimple()
 	r := NewRequester(config, logger)
 	return &Sdk{
