@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -12,6 +13,7 @@ type ISdk interface {
 	SendEvent(contactID string, campaignID string, tracker *Tracker) (string, error)
 	ProductTrends(limit int) (string, error)
 	ProductRecommends(aiID string, contactID string, productID int) (string, error)
+	AppNotifications(contactID string, deviceID string, pushKeys []string) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -96,4 +98,16 @@ func (sdk *Sdk) ProductRecommends(aiID string, contactID string, productID int) 
 	productRecommendsPath := fmt.Sprintf("/api/ai/%s", aiID)
 
 	return sdk.rq.Get(productRecommendsPath, p)
+}
+
+// AppNotifications return app notifications for given contactID, deviceID and pushKeys
+func (sdk *Sdk) AppNotifications(contactID string, deviceID string, pushKeys []string) (string, error) {
+	p := map[string]string{}
+	p["contact_id"] = contactID
+	p["device_id"] = deviceID
+	p["push_keys"] = strings.Join(pushKeys, ",")
+
+	notificationPath := fmt.Sprintf("/api/app-notifications")
+
+	return sdk.rq.Get(notificationPath, p)
 }
