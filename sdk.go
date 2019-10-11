@@ -46,8 +46,18 @@ func NewSdkR(rq IRequester, logger ILogger) *Sdk {
 	}
 }
 
+// SendTransactionEvent post tracker event to PAM
+func (sdk *Sdk) SendTransactionEvent(contactID string, campaignID string, transactionID string, tracker *Tracker) (string, error) {
+	return sdk.sendEvent(contactID, campaignID, transactionID, tracker)
+}
+
 // SendEvent post tracker event to PAM
 func (sdk *Sdk) SendEvent(contactID string, campaignID string, tracker *Tracker) (string, error) {
+	return sdk.sendEvent(contactID, campaignID, "", tracker)
+}
+
+// SendEvent post tracker event to PAM
+func (sdk *Sdk) sendEvent(contactID string, campaignID string, transactionID string, tracker *Tracker) (string, error) {
 
 	if tracker.FormFields == nil {
 		tracker.FormFields = make(map[string]interface{})
