@@ -46,8 +46,8 @@ func NewSdkR(rq IRequester, logger ILogger) *Sdk {
 	}
 }
 
-// SendTransactionEvent post tracker event to PAM
-func (sdk *Sdk) SendTransactionEvent(contactID string, campaignID string, transactionID string, tracker *Tracker) (string, error) {
+// SendEventTransaction post tracker event to PAM
+func (sdk *Sdk) SendEventTransaction(contactID string, campaignID string, transactionID string, tracker *Tracker) (string, error) {
 	return sdk.sendEvent(contactID, campaignID, transactionID, tracker)
 }
 
@@ -64,6 +64,9 @@ func (sdk *Sdk) sendEvent(contactID string, campaignID string, transactionID str
 	}
 	if len(campaignID) > 0 {
 		tracker.FormFields["_campaign"] = campaignID
+	}
+	if len(transactionID) > 0 {
+		tracker.FormFields["_transaction_id"] = transactionID
 	}
 
 	js, _ := json.Marshal(tracker)
