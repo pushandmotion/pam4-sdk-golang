@@ -31,7 +31,7 @@ func (sdk *MockSdk) ProductRecommends(aiID string, contactID string, productID i
 }
 
 // AppNotifications is mock
-func (sdk *MockSdk) AppNotifications(contactID string, deviceID string, pushKeys []string) (string, error) {
-	args := sdk.Called(contactID, deviceID, pushKeys)
+func (sdk *MockSdk) AppNotifications(contactID string, mediaAlias string, mediaValue string) (string, error) {
+	args := sdk.Called(contactID, mediaAlias, mediaValue)
 	return args.String(0), args.Error(1)
 }
