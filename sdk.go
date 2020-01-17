@@ -138,7 +138,7 @@ func (sdk *Sdk) AppNotifications(contactID string, mediaAlias string, mediaValue
 // GetSegmentsCount return number of segments amount
 func (sdk *Sdk) GetSegmentsCount() (string, error) {
 
-	countSegments := fmt.Sprintf("/api/triggers/count")
+	countSegments := fmt.Sprintf("/triggers/count")
 
 	return sdk.rq.Get(countSegments, nil)
 }
@@ -158,7 +158,7 @@ func (sdk *Sdk) GetSegments(q string, page int, limit int) (string, error) {
 		p["limit"] = fmt.Sprintf("%d", limit)
 	}
 
-	segments := fmt.Sprintf("/api/triggers")
+	segments := fmt.Sprintf("/triggers")
 
 	return sdk.rq.Get(segments, p)
 }
@@ -170,35 +170,35 @@ func (sdk *Sdk) GetSegmentsStats(segmentIDs []string) (string, error) {
 		p["id"] = strings.Join(segmentIDs, ",")
 	}
 
-	segmentStat := fmt.Sprintf("/api/triggers/stat")
+	segmentStat := fmt.Sprintf("/triggers/stat")
 
 	return sdk.rq.Get(segmentStat, p)
 }
 
 // GetSegmentByID return segment info by segment ID
 func (sdk *Sdk) GetSegmentByID(segmentID string) (string, error) {
-	segmentByID := fmt.Sprintf("/api/triggers/%s", segmentID)
+	segmentByID := fmt.Sprintf("/triggers/%s", segmentID)
 
 	return sdk.rq.Get(segmentByID, nil)
 }
 
 // CreateSegment create segment
 func (sdk *Sdk) CreateSegment(body interface{}) (string, error) {
-	createSegment := fmt.Sprintf("/api/triggers")
+	createSegment := fmt.Sprintf("/triggers")
 
 	return sdk.rq.PostJSON(createSegment, body)
 }
 
 // UpdateSegment update segment by id
 func (sdk *Sdk) UpdateSegment(segmentID string, body interface{}) (string, error) {
-	updateSegment := fmt.Sprintf("/api/triggers/%s", segmentID)
+	updateSegment := fmt.Sprintf("/triggers/%s", segmentID)
 
 	return sdk.rq.PutJSON(updateSegment, body)
 }
 
 // DeleteSegment delete segment by id
 func (sdk *Sdk) DeleteSegment(segmentID string) (string, error) {
-	deleteSegment := fmt.Sprintf("/api/triggers/%s", segmentID)
+	deleteSegment := fmt.Sprintf("/triggers/%s", segmentID)
 
 	return sdk.rq.Delete(deleteSegment, nil)
 }
