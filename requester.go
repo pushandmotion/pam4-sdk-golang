@@ -27,6 +27,13 @@ type IRequester interface {
 	PostJSONRH(path string, body interface{}, headers map[string]string) (*http.Response, string, error)
 	PostJSONRHC(path string, body interface{}, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error)
 	PostFile(path string, filePath string, postParam string) (string, error)
+	PutJSON(path string, body interface{}) (string, error)
+	PutJSONRH(path string, body interface{}, headers map[string]string) (*http.Response, string, error)
+	PutJSONRHC(path string, body interface{}, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error)
+	Delete(path string, params map[string]string) (string, error)
+	DeleteR(path string, params map[string]string) (*http.Response, string, error)
+	DeleteRH(path string, params map[string]string, headers map[string]string) (*http.Response, string, error)
+	DeleteRHC(path string, params map[string]string, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error)
 }
 
 // IRequesterConfig config for requester
@@ -350,6 +357,111 @@ func (rqt *Requester) PostFile(path string, filePath string, postParam string) (
 		return body, NewErrM(res.Status)
 	}
 	return body, nil
+}
+
+// PutJSON make a PUT request with JSON body
+func (rqt *Requester) PutJSON(path string, jsonBody interface{}) (string, error) {
+	_, body, err := rqt.PutJSONRH(path, jsonBody, nil)
+	return body, err
+}
+
+// PutJSONRH make a PUT request with JSON body
+func (rqt *Requester) PutJSONRH(path string, jsonBody interface{}, headers map[string]string) (*http.Response, string, error) {
+	return rqt.PutJSONRHC(path, jsonBody, headers, nil)
+}
+
+func (rqt *Requester) PutJSONRHC(path string, jsonBody interface{}, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error) {
+	r := rqt.cloneR()
+
+	url := fmt.Sprint(rqt.config.Endpoint(), path)
+	rqt.logger.Debug("[RQT PUT]: " + url)
+	r = r.Put(url)
+	rqt.setupCredential(r)
+	if jsonBody != nil {
+		r = r.Send(jsonBody)
+	}
+
+	if headers != nil {
+		for key, value := range headers {
+			r.Header.Add(key, value)
+		}
+	}
+
+	if len(cookies) > 0 {
+		for _, c := range cookies {
+			r.AddCookie(c)
+		}
+	}
+
+	res, body, errs := r.End()
+	if len(errs) > 0 {
+		for _, err := range errs {
+			rqt.logger.Debug(fmt.Sprintf("[RQT PUT-ERR]: %s", err.Error()))
+		}
+		if res != nil {
+			return res, body, NewErrM(res.Status)
+		} else {
+			return res, body, NewErrM(errs[0].Error())
+		}
+	}
+
+	rqt.logger.Debug(fmt.Sprintf("[RQT PUT-RESP]: %s %s", url, rqt.truncateLogBody(body)))
+	return res, body, nil
+}
+
+// Delete make a DELETE request
+func (rqt *Requester) Delete(path string, params map[string]string) (string, error) {
+	_, body, err := rqt.DeleteR(path, params)
+	return body, err
+}
+
+// DeleteR make a DELETE request and response http.Response
+func (rqt *Requester) DeleteR(path string, params map[string]string) (*http.Response, string, error) {
+	res, body, err := rqt.DeleteRH(path, params, nil)
+	return res, body, err
+}
+
+// DeleteRH make a DELETE request with headers and response http.Response
+func (rqt *Requester) DeleteRH(path string, params map[string]string, headers map[string]string) (*http.Response, string, error) {
+	return rqt.DeleteRHC(path, params, headers, nil)
+}
+
+// DeleteRHC make a DELETE request with headers and cookies and response http.Response
+func (rqt *Requester) DeleteRHC(path string, params map[string]string, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error) {
+	r := rqt.cloneR()
+
+	url := fmt.Sprint(rqt.config.Endpoint(), path)
+	rqt.logger.Debug("[RQT DELETE]: " + url)
+	r = r.Delete(url)
+	rqt.setupCredential(r)
+	if params != nil {
+		for key, value := range params {
+			r = r.Param(key, value)
+		}
+	}
+
+	if headers != nil {
+		for key, value := range headers {
+			r.Header.Add(key, value)
+		}
+	}
+
+	if len(cookies) > 0 {
+		for _, c := range cookies {
+			r.AddCookie(c)
+		}
+	}
+
+	res, body, errs := r.End()
+	if len(errs) > 0 {
+		return res, "", NewErrorE(rqt.logger, errs[0])
+	}
+	rqt.logger.Debug(fmt.Sprintf("[RQT DELETE-RESP]: %s %s", url, rqt.truncateLogBody(body)))
+	if res.StatusCode >= 400 {
+		return res, body, NewErrM(res.Status)
+	}
+
+	return res, body, nil
 }
 
 func (rqt *Requester) truncateLogBody(body string) string {

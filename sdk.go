@@ -15,11 +15,15 @@ type ISdk interface {
 	ProductRecommends(aiID string, contactID string, productID int) (string, error)
 	AppNotifications(contactID string, mediaAlias string, mediaValue string) (string, error)
 
-	GetTriggersCount() (string, error)
-	GetTriggers(q string, page int, limit int) (string, error)
-	GetTriggersStats(triggerID []string) (string, error)
+	GetSegmentsCount() (string, error)
+	GetSegments(q string, page int, limit int) (string, error)
+	GetSegmentsStats(segmentIDs []string) (string, error)
+	GetSegmentByID(segmentID string) (string, error)
 
-	CreateTrigger(body map[string]interface{}) (string, error)
+	CreateSegment(body interface{}) (string, error)
+	UpdateSegment(segmentID string, body interface{}) (string, error)
+
+	DeleteSegment(segmentID string) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -131,16 +135,16 @@ func (sdk *Sdk) AppNotifications(contactID string, mediaAlias string, mediaValue
 	return sdk.rq.Get(notificationPath, p)
 }
 
-// GetTriggersCount return number of triggers amount
-func (sdk *Sdk) GetTriggersCount() (string, error) {
+// GetSegmentsCount return number of segments amount
+func (sdk *Sdk) GetSegmentsCount() (string, error) {
 
-	countTriggers := fmt.Sprintf("/api/triggers/count")
+	countSegments := fmt.Sprintf("/api/triggers/count")
 
-	return sdk.rq.Get(countTriggers, nil)
+	return sdk.rq.Get(countSegments, nil)
 }
 
-// GetTriggers return list of triggers
-func (sdk *Sdk) GetTriggers(q string, page int, limit int) (string, error) {
+// GetSegments return list of segments
+func (sdk *Sdk) GetSegments(q string, page int, limit int) (string, error) {
 	p := map[string]string{}
 	if len(q) > 0 {
 		p["q"] = q
@@ -154,38 +158,47 @@ func (sdk *Sdk) GetTriggers(q string, page int, limit int) (string, error) {
 		p["limit"] = fmt.Sprintf("%d", limit)
 	}
 
-	triggers := fmt.Sprintf("/api/triggers")
+	segments := fmt.Sprintf("/api/triggers")
 
-	return sdk.rq.Get(triggers, p)
+	return sdk.rq.Get(segments, p)
 }
 
-// GetTriggersStats return number of customer in triggers amount
-func (sdk *Sdk) GetTriggersStats(triggerIDs []string) (string, error) {
+// GetSegmentsStats return number of customer in segments amount
+func (sdk *Sdk) GetSegmentsStats(segmentIDs []string) (string, error) {
 	p := map[string]string{}
-	if len(triggerIDs) > 0 {
-		p["id"] = strings.Join(triggerIDs, ",")
+	if len(segmentIDs) > 0 {
+		p["id"] = strings.Join(segmentIDs, ",")
 	}
 
-	triggersStat := fmt.Sprintf("/api/triggers/stat")
+	segmentStat := fmt.Sprintf("/api/triggers/stat")
 
-	return sdk.rq.Get(triggersStat, p)
+	return sdk.rq.Get(segmentStat, p)
 }
 
-// CreateTrigger create trigger
-func (sdk *Sdk) CreateTrigger(body interface{}) (string, error) {
-	createTrigger := fmt.Sprintf("/api/triggers")
+// GetSegmentByID return segment info by segment ID
+func (sdk *Sdk) GetSegmentByID(segmentID string) (string, error) {
+	segmentByID := fmt.Sprintf("/api/triggers/%s", segmentID)
 
-	return sdk.rq.PostJSON(createTrigger, body)
+	return sdk.rq.Get(segmentByID, nil)
 }
 
-// {
-// name: "Testing"
-// alias: "testing"x
-// triggers: [{type: "IN_OR_NOT_IN_TRIGGERS",…}]
-// trigger_excludes: []
-// is_enabled: true
-// delay_amount: ""
-// delay_unit: ""
-// }
+// CreateSegment create segment
+func (sdk *Sdk) CreateSegment(body interface{}) (string, error) {
+	createSegment := fmt.Sprintf("/api/triggers")
 
-// {"id":"f355d839-9fae-4352-a074-473ee8473c08","is_enabled":true,"created_at":"2020-01-17 04:07:36","updated_at":"2020-01-17 04:07:36","type":"SAVED","name":"Testing","alias":"testing","description":"","triggers":[{"type":"IN_OR_NOT_IN_TRIGGERS","conditions":[{"operator":"in","trigger":"2f7185ea-f6dd-4106-97ba-f15015afde55"}]}],"trigger_excludes":null,"is_custom":false,"delay_amount":"","delay_unit":"","excluders":null}
+	return sdk.rq.PostJSON(createSegment, body)
+}
+
+// UpdateSegment update segment by id
+func (sdk *Sdk) UpdateSegment(segmentID string, body interface{}) (string, error) {
+	updateSegment := fmt.Sprintf("/api/triggers/%s", segmentID)
+
+	return sdk.rq.PutJSON(updateSegment, body)
+}
+
+// DeleteSegment delete segment by id
+func (sdk *Sdk) DeleteSegment(segmentID string) (string, error) {
+	deleteSegment := fmt.Sprintf("/api/triggers/%s", segmentID)
+
+	return sdk.rq.Delete(deleteSegment, nil)
+}
