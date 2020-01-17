@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -13,6 +14,12 @@ type ISdk interface {
 	ProductTrends(limit int) (string, error)
 	ProductRecommends(aiID string, contactID string, productID int) (string, error)
 	AppNotifications(contactID string, mediaAlias string, mediaValue string) (string, error)
+
+	GetTriggersCount() (string, error)
+	GetTriggers(q string, page int, limit int) (string, error)
+	GetTriggersStats(triggerID []string) (string, error)
+
+	CreateTrigger(body map[string]interface{}) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -123,3 +130,62 @@ func (sdk *Sdk) AppNotifications(contactID string, mediaAlias string, mediaValue
 
 	return sdk.rq.Get(notificationPath, p)
 }
+
+// GetTriggersCount return number of triggers amount
+func (sdk *Sdk) GetTriggersCount() (string, error) {
+
+	countTriggers := fmt.Sprintf("/api/triggers/count")
+
+	return sdk.rq.Get(countTriggers, nil)
+}
+
+// GetTriggers return list of triggers
+func (sdk *Sdk) GetTriggers(q string, page int, limit int) (string, error) {
+	p := map[string]string{}
+	if len(q) > 0 {
+		p["q"] = q
+	}
+
+	if page > 0 {
+		p["page"] = fmt.Sprintf("%d", page)
+	}
+
+	if limit > 0 {
+		p["limit"] = fmt.Sprintf("%d", limit)
+	}
+
+	triggers := fmt.Sprintf("/api/triggers")
+
+	return sdk.rq.Get(triggers, p)
+}
+
+// GetTriggersStats return number of customer in triggers amount
+func (sdk *Sdk) GetTriggersStats(triggerIDs []string) (string, error) {
+	p := map[string]string{}
+	if len(triggerIDs) > 0 {
+		p["id"] = strings.Join(triggerIDs, ",")
+	}
+
+	triggersStat := fmt.Sprintf("/api/triggers/stat")
+
+	return sdk.rq.Get(triggersStat, p)
+}
+
+// CreateTrigger create trigger
+func (sdk *Sdk) CreateTrigger(body interface{}) (string, error) {
+	createTrigger := fmt.Sprintf("/api/triggers")
+
+	return sdk.rq.PostJSON(createTrigger, body)
+}
+
+// {
+// name: "Testing"
+// alias: "testing"x
+// triggers: [{type: "IN_OR_NOT_IN_TRIGGERS",…}]
+// trigger_excludes: []
+// is_enabled: true
+// delay_amount: ""
+// delay_unit: ""
+// }
+
+// {"id":"f355d839-9fae-4352-a074-473ee8473c08","is_enabled":true,"created_at":"2020-01-17 04:07:36","updated_at":"2020-01-17 04:07:36","type":"SAVED","name":"Testing","alias":"testing","description":"","triggers":[{"type":"IN_OR_NOT_IN_TRIGGERS","conditions":[{"operator":"in","trigger":"2f7185ea-f6dd-4106-97ba-f15015afde55"}]}],"trigger_excludes":null,"is_custom":false,"delay_amount":"","delay_unit":"","excluders":null}
