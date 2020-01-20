@@ -15,6 +15,7 @@ type ISdk interface {
 	ProductRecommends(aiID string, contactID string, productID int) (string, error)
 	AppNotifications(contactID string, mediaAlias string, mediaValue string) (string, error)
 
+	// Segments
 	GetSegmentsCount() (string, error)
 	GetSegments(q string, page int, limit int) (string, error)
 	GetSegmentsStats(segmentIDs []string) (string, error)
@@ -24,6 +25,10 @@ type ISdk interface {
 	UpdateSegment(segmentID string, body interface{}) (string, error)
 
 	DeleteSegment(segmentID string) (string, error)
+
+	// Campaigns
+	GetCampaigns(q string, page int, limit int) (string, error)
+	GetCampaignsStats(campaignIDs []string) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -201,4 +206,36 @@ func (sdk *Sdk) DeleteSegment(segmentID string) (string, error) {
 	deleteSegment := fmt.Sprintf("/triggers/%s", segmentID)
 
 	return sdk.rq.Delete(deleteSegment, nil)
+}
+
+// GetCampaigns return list of campaigns
+func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
+	p := map[string]string{}
+	if len(q) > 0 {
+		p["q"] = q
+	}
+
+	if page > 0 {
+		p["page"] = fmt.Sprintf("%d", page)
+	}
+
+	if limit > 0 {
+		p["limit"] = fmt.Sprintf("%d", limit)
+	}
+
+	campaigns := fmt.Sprintf("/campaigns")
+
+	return sdk.rq.Get(campaigns, p)
+}
+
+// GetCampaignsStats return number of campaign in campaigns amount
+func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
+	p := map[string]string{}
+	if len(campaignIDs) > 0 {
+		p["id"] = strings.Join(campaignIDs, ",")
+	}
+
+	campaignStat := fmt.Sprintf("/campaigns/stat")
+
+	return sdk.rq.Get(campaignStat, p)
 }
