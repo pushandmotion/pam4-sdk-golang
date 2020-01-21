@@ -52,19 +52,19 @@ func NewSdk(baseURL string, appID string, appSecret string) *Sdk {
 // NewSdkT create client using default requester with specify timeout
 func NewSdkT(connectSDK, cmsSDK *SDKConnector) *Sdk {
 	connectConfig := NewCustomRequesterConfig(
-		connectSDK.baseURL,
+		connectSDK.BaseURL,
 		"x-app-id",
 		"x-secret",
-		connectSDK.appID,
-		connectSDK.appSecret,
-		connectSDK.requestTimeout)
+		connectSDK.AppID,
+		connectSDK.AppSecret,
+		connectSDK.RequestTimeout)
 	cmsConfig := NewCustomRequesterConfig(
-		cmsSDK.baseURL,
+		cmsSDK.BaseURL,
 		"x-app-id",
 		"x-secret",
-		cmsSDK.appID,
-		cmsSDK.appSecret,
-		cmsSDK.requestTimeout)
+		cmsSDK.AppID,
+		cmsSDK.AppSecret,
+		cmsSDK.RequestTimeout)
 	logger := NewLoggerSimple()
 	conr := NewRequester(connectConfig, logger)
 	cmsr := NewRequester(cmsConfig, logger)
