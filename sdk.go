@@ -31,7 +31,7 @@ type ISdk interface {
 	GetCampaignsStats(campaignIDs []string) (string, error)
 
 	// Contact
-	CreateContact(file string, fieldMatch string) (string, error)
+	CreateContact(filePath, fieldMatch, tag string) (string, error)
 }
 
 // Sdk is struct for PAM client
