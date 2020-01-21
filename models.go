@@ -1,5 +1,15 @@
 package pam4sdk
 
+import "time"
+
+// SDKConnector is the information that using for requestor
+type SDKConnector struct {
+	baseURL        string
+	appID          string
+	appSecret      string
+	requestTimeout time.Duration
+}
+
 // Tracker is the information that can send to PAM
 type Tracker struct {
 	Event       string                 `json:"event"`

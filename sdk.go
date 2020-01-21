@@ -33,32 +33,50 @@ type ISdk interface {
 
 // Sdk is struct for PAM client
 type Sdk struct {
+	connect *RequestLogger
+	cms     *RequestLogger
+}
+
+// RequestLogger is struct for request and logger
+type RequestLogger struct {
 	rq     IRequester
 	logger ILogger
 }
 
 // NewSdk create client using default requester and 10 seconds timeout
 func NewSdk(baseURL string, appID string, appSecret string) *Sdk {
-	return NewSdkT(baseURL, appID, appSecret, 10*time.Second)
+	sdk := &SDKConnector{baseURL, appID, appSecret, 10 * time.Second}
+	return NewSdkT(sdk, nil)
 }
 
 // NewSdkT create client using default requester with specify timeout
-func NewSdkT(baseURL string, appID string, appSecret string, requestTimeout time.Duration) *Sdk {
-	config := NewCustomRequesterConfig(baseURL, "x-app-id", "x-secret", appID, appSecret, requestTimeout)
+func NewSdkT(connectSDK, cmsSDK *SDKConnector) *Sdk {
+	connectConfig := NewCustomRequesterConfig(
+		connectSDK.baseURL,
+		"x-app-id",
+		"x-secret",
+		connectSDK.appID,
+		connectSDK.appSecret,
+		connectSDK.requestTimeout)
+	cmsConfig := NewCustomRequesterConfig(
+		cmsSDK.baseURL,
+		"x-app-id",
+		"x-secret",
+		cmsSDK.appID,
+		cmsSDK.appSecret,
+		cmsSDK.requestTimeout)
 	logger := NewLoggerSimple()
-	r := NewRequester(config, logger)
+	conr := NewRequester(connectConfig, logger)
+	cmsr := NewRequester(cmsConfig, logger)
 	return &Sdk{
-		rq:     r,
-		logger: logger,
+		connect: &RequestLogger{rq: conr, logger: logger},
+		cms:     &RequestLogger{rq: cmsr, logger: logger},
 	}
 }
 
 // NewSdkR create new client with requester
-func NewSdkR(rq IRequester, logger ILogger) *Sdk {
-	return &Sdk{
-		rq:     rq,
-		logger: logger,
-	}
+func NewSdkR(conRL, cmsRL *RequestLogger) *Sdk {
+	return &Sdk{conRL, cmsRL}
 }
 
 // SendEventTransaction post tracker event to PAM
@@ -73,6 +91,8 @@ func (sdk *Sdk) SendEvent(contactID string, campaignID string, tracker *Tracker)
 
 // SendEvent post tracker event to PAM
 func (sdk *Sdk) sendEvent(contactID string, campaignID string, transactionID string, tracker *Tracker) (string, error) {
+
+	sdkC := sdk.connect
 
 	if tracker.FormFields == nil {
 		tracker.FormFields = make(map[string]interface{})
@@ -94,26 +114,28 @@ func (sdk *Sdk) sendEvent(contactID string, campaignID string, transactionID str
 			Value: contactID,
 		},
 	}
-	_, body, err := sdk.rq.PostJSONRHC("/trackers/events", p, nil, c)
+	_, body, err := sdkC.rq.PostJSONRHC("/trackers/events", p, nil, c)
 
 	if err != nil {
-		return "", NewErrorE(sdk.logger, err)
+		return "", NewErrorE(sdkC.logger, err)
 	}
 	return body, nil
 }
 
 // ProductTrends return product trendings
 func (sdk *Sdk) ProductTrends(limit int) (string, error) {
+	sdkC := sdk.connect
 	p := map[string]string{}
 	if limit > 0 {
 		p["limit"] = fmt.Sprintf("%v", limit)
 	}
 
-	return sdk.rq.Get("/api/products/trends", p)
+	return sdkC.rq.Get("/api/products/trends", p)
 }
 
 // ProductRecommends return product recommends
 func (sdk *Sdk) ProductRecommends(aiID string, contactID string, productID int) (string, error) {
+	sdkC := sdk.connect
 	p := map[string]string{}
 	if len(contactID) > 0 {
 		p["contact_id"] = fmt.Sprintf("%v", contactID)
@@ -125,11 +147,12 @@ func (sdk *Sdk) ProductRecommends(aiID string, contactID string, productID int) 
 
 	productRecommendsPath := fmt.Sprintf("/api/ai/%s", aiID)
 
-	return sdk.rq.Get(productRecommendsPath, p)
+	return sdkC.rq.Get(productRecommendsPath, p)
 }
 
 // AppNotifications return app notifications for given contactID, mediaAlias and mediaValue
 func (sdk *Sdk) AppNotifications(contactID string, mediaAlias string, mediaValue string) (string, error) {
+	sdkC := sdk.connect
 	p := map[string]string{}
 	p["contact_id"] = contactID
 	p["media_alias"] = mediaAlias
@@ -137,19 +160,20 @@ func (sdk *Sdk) AppNotifications(contactID string, mediaAlias string, mediaValue
 
 	notificationPath := fmt.Sprintf("/api/app-notifications")
 
-	return sdk.rq.Get(notificationPath, p)
+	return sdkC.rq.Get(notificationPath, p)
 }
 
 // GetSegmentsCount return number of segments amount
 func (sdk *Sdk) GetSegmentsCount() (string, error) {
-
+	sdkC := sdk.connect
 	countSegments := fmt.Sprintf("/triggers/count")
 
-	return sdk.rq.Get(countSegments, nil)
+	return sdkC.rq.Get(countSegments, nil)
 }
 
 // GetSegments return list of segments
 func (sdk *Sdk) GetSegments(q string, page int, limit int) (string, error) {
+	sdkC := sdk.connect
 	p := map[string]string{}
 	if len(q) > 0 {
 		p["q"] = q
@@ -165,11 +189,12 @@ func (sdk *Sdk) GetSegments(q string, page int, limit int) (string, error) {
 
 	segments := fmt.Sprintf("/triggers")
 
-	return sdk.rq.Get(segments, p)
+	return sdkC.rq.Get(segments, p)
 }
 
 // GetSegmentsStats return number of customer in segments amount
 func (sdk *Sdk) GetSegmentsStats(segmentIDs []string) (string, error) {
+	sdkC := sdk.cms
 	p := map[string]string{}
 	if len(segmentIDs) > 0 {
 		p["id"] = strings.Join(segmentIDs, ",")
@@ -177,39 +202,44 @@ func (sdk *Sdk) GetSegmentsStats(segmentIDs []string) (string, error) {
 
 	segmentStat := fmt.Sprintf("/triggers/stat")
 
-	return sdk.rq.Get(segmentStat, p)
+	return sdkC.rq.Get(segmentStat, p)
 }
 
 // GetSegmentByID return segment info by segment ID
 func (sdk *Sdk) GetSegmentByID(segmentID string) (string, error) {
+	sdkC := sdk.connect
 	segmentByID := fmt.Sprintf("/triggers/%s", segmentID)
 
-	return sdk.rq.Get(segmentByID, nil)
+	return sdkC.rq.Get(segmentByID, nil)
 }
 
 // CreateSegment create segment
 func (sdk *Sdk) CreateSegment(body interface{}) (string, error) {
+	sdkC := sdk.connect
 	createSegment := fmt.Sprintf("/triggers")
 
-	return sdk.rq.PostJSON(createSegment, body)
+	return sdkC.rq.PostJSON(createSegment, body)
 }
 
 // UpdateSegment update segment by id
 func (sdk *Sdk) UpdateSegment(segmentID string, body interface{}) (string, error) {
+	sdkC := sdk.connect
 	updateSegment := fmt.Sprintf("/triggers/%s", segmentID)
 
-	return sdk.rq.PutJSON(updateSegment, body)
+	return sdkC.rq.PutJSON(updateSegment, body)
 }
 
 // DeleteSegment delete segment by id
 func (sdk *Sdk) DeleteSegment(segmentID string) (string, error) {
+	sdkC := sdk.connect
 	deleteSegment := fmt.Sprintf("/triggers/%s", segmentID)
 
-	return sdk.rq.Delete(deleteSegment, nil)
+	return sdkC.rq.Delete(deleteSegment, nil)
 }
 
 // GetCampaigns return list of campaigns
 func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
+	sdkC := sdk.connect
 	p := map[string]string{}
 	if len(q) > 0 {
 		p["q"] = q
@@ -225,11 +255,12 @@ func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
 
 	campaigns := fmt.Sprintf("/campaigns")
 
-	return sdk.rq.Get(campaigns, p)
+	return sdkC.rq.Get(campaigns, p)
 }
 
 // GetCampaignsStats return number of campaign in campaigns amount
 func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
+	sdkC := sdk.connect
 	p := map[string]string{}
 	if len(campaignIDs) > 0 {
 		p["id"] = strings.Join(campaignIDs, ",")
@@ -237,5 +268,5 @@ func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
 
 	campaignStat := fmt.Sprintf("/campaigns/stat")
 
-	return sdk.rq.Get(campaignStat, p)
+	return sdkC.rq.Get(campaignStat, p)
 }
