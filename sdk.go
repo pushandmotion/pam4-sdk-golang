@@ -31,7 +31,7 @@ type ISdk interface {
 	GetCampaignsStats(campaignIDs []string) (string, error)
 
 	// Contact
-	CreateContact(file string, fieldMatch string) (bool, error)
+	CreateContact(file string, fieldMatch string) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -275,7 +275,7 @@ func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
 }
 
 // CreateContact return nil when create success
-func (sdk *Sdk) CreateContact(filePath, fieldMatch, tag string) error {
+func (sdk *Sdk) CreateContact(filePath, fieldMatch, tag string) (string, error) {
 	sdkC := sdk.connect
 	postParams := fmt.Sprintf(`attrs={{"%s":"customer-id"}},tags="%s"`, fieldMatch, tag)
 
