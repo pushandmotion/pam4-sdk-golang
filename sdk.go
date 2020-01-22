@@ -168,7 +168,7 @@ func (sdk *Sdk) AppNotifications(contactID string, mediaAlias string, mediaValue
 
 // GetSegmentsCount return number of segments amount
 func (sdk *Sdk) GetSegmentsCount() (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	countSegments := fmt.Sprintf("/triggers/count")
 
 	return sdkC.rq.Get(countSegments, nil)
@@ -176,7 +176,7 @@ func (sdk *Sdk) GetSegmentsCount() (string, error) {
 
 // GetSegments return list of segments
 func (sdk *Sdk) GetSegments(q string, page int, limit int) (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	p := map[string]string{}
 	if len(q) > 0 {
 		p["q"] = q
@@ -197,7 +197,7 @@ func (sdk *Sdk) GetSegments(q string, page int, limit int) (string, error) {
 
 // GetSegmentsStats return number of customer in segments amount
 func (sdk *Sdk) GetSegmentsStats(segmentIDs []string) (string, error) {
-	sdkC := sdk.cms
+	sdkC := sdk.connect
 	p := map[string]string{}
 	if len(segmentIDs) > 0 {
 		p["id"] = strings.Join(segmentIDs, ",")
@@ -210,7 +210,7 @@ func (sdk *Sdk) GetSegmentsStats(segmentIDs []string) (string, error) {
 
 // GetSegmentByID return segment info by segment ID
 func (sdk *Sdk) GetSegmentByID(segmentID string) (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	segmentByID := fmt.Sprintf("/triggers/%s", segmentID)
 
 	return sdkC.rq.Get(segmentByID, nil)
@@ -218,7 +218,7 @@ func (sdk *Sdk) GetSegmentByID(segmentID string) (string, error) {
 
 // CreateSegment create segment
 func (sdk *Sdk) CreateSegment(body interface{}) (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	createSegment := fmt.Sprintf("/triggers")
 
 	return sdkC.rq.PostJSON(createSegment, body)
@@ -226,7 +226,7 @@ func (sdk *Sdk) CreateSegment(body interface{}) (string, error) {
 
 // UpdateSegment update segment by id
 func (sdk *Sdk) UpdateSegment(segmentID string, body interface{}) (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	updateSegment := fmt.Sprintf("/triggers/%s", segmentID)
 
 	return sdkC.rq.PutJSON(updateSegment, body)
@@ -234,7 +234,7 @@ func (sdk *Sdk) UpdateSegment(segmentID string, body interface{}) (string, error
 
 // DeleteSegment delete segment by id
 func (sdk *Sdk) DeleteSegment(segmentID string) (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	deleteSegment := fmt.Sprintf("/triggers/%s", segmentID)
 
 	return sdkC.rq.Delete(deleteSegment, nil)
@@ -242,7 +242,7 @@ func (sdk *Sdk) DeleteSegment(segmentID string) (string, error) {
 
 // GetCampaigns return list of campaigns
 func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	p := map[string]string{}
 	if len(q) > 0 {
 		p["q"] = q
@@ -263,7 +263,7 @@ func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
 
 // GetCampaignsStats return number of campaign in campaigns amount
 func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	p := map[string]string{}
 	if len(campaignIDs) > 0 {
 		p["id"] = strings.Join(campaignIDs, ",")
@@ -276,7 +276,7 @@ func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
 
 // CreateContact return nil when create success
 func (sdk *Sdk) CreateContact(filePath, fieldMatch, tag string) (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	postParams := fmt.Sprintf(`attrs={{"%s":"customer-id"}},tags="%s"`, fieldMatch, tag)
 
 	return sdkC.rq.PostFile("api/contacts/upload", filePath, postParams)
