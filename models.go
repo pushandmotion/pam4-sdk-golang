@@ -55,6 +55,8 @@ func NewSegment(intf interface{}) *Segment {
 	if err != nil {
 		return segment
 	}
+	now := time.Now()
 	segment.ID = uuid.New().String()
+	segment.CreateAt = &now
 	return segment
 }
