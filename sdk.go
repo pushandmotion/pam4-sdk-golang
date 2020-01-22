@@ -21,8 +21,8 @@ type ISdk interface {
 	GetSegmentsStats(segmentIDs []string) (string, error)
 	GetSegmentByID(segmentID string) (string, error)
 
-	CreateSegment(body interface{}) (string, error)
-	UpdateSegment(segmentID string, body interface{}) (string, error)
+	CreateSegment(body *Segment) (string, error)
+	UpdateSegment(segmentID string, body *Segment) (string, error)
 
 	DeleteSegment(segmentID string) (string, error)
 
@@ -217,7 +217,7 @@ func (sdk *Sdk) GetSegmentByID(segmentID string) (string, error) {
 }
 
 // CreateSegment create segment
-func (sdk *Sdk) CreateSegment(body interface{}) (string, error) {
+func (sdk *Sdk) CreateSegment(body *Segment) (string, error) {
 	sdkC := sdk.cms
 	createSegment := fmt.Sprintf("/triggers")
 
@@ -225,7 +225,7 @@ func (sdk *Sdk) CreateSegment(body interface{}) (string, error) {
 }
 
 // UpdateSegment update segment by id
-func (sdk *Sdk) UpdateSegment(segmentID string, body interface{}) (string, error) {
+func (sdk *Sdk) UpdateSegment(segmentID string, body *Segment) (string, error) {
 	sdkC := sdk.cms
 	updateSegment := fmt.Sprintf("/triggers/%s", segmentID)
 
