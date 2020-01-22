@@ -26,7 +26,7 @@ type IRequester interface {
 	PostJSONR(path string, body interface{}) (*http.Response, string, error)
 	PostJSONRH(path string, body interface{}, headers map[string]string) (*http.Response, string, error)
 	PostJSONRHC(path string, body interface{}, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error)
-	PostFile(path string, filePath string, postParam string) (string, error)
+	PostFile(path string, filePath string, postParam string, extraData string) (string, error)
 	PutJSON(path string, body interface{}) (string, error)
 	PutJSONRH(path string, body interface{}, headers map[string]string) (*http.Response, string, error)
 	PutJSONRHC(path string, body interface{}, headers map[string]string, cookies []*http.Cookie) (*http.Response, string, error)
@@ -327,7 +327,7 @@ func (rqt *Requester) PostJSON(path string, jsonBody interface{}) (string, error
 }
 
 // PostFile send file using HTTP POST
-func (rqt *Requester) PostFile(path string, filePath string, postParam string) (string, error) {
+func (rqt *Requester) PostFile(path string, filePath string, postParam string, extraData string) (string, error) {
 	r := rqt.cloneR()
 
 	f, err := filepath.Abs(filePath)
@@ -344,7 +344,13 @@ func (rqt *Requester) PostFile(path string, filePath string, postParam string) (
 
 	r = r.Post(url)
 	rqt.setupCredential(r)
-	r = r.Type("multipart").SendFile(bytesOfFile, filepath.Base(filePath), postParam)
+	r = r.Type("multipart")
+
+	if extraData != "" {
+		r.Send(extraData)
+	}
+
+	r.SendFile(bytesOfFile, filepath.Base(filePath), postParam)
 	res, body, errs := r.End()
 	if len(errs) > 0 {
 		for _, e := range errs {
