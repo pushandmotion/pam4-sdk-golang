@@ -275,9 +275,9 @@ func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
 }
 
 // CreateContact return nil when create success
-func (sdk *Sdk) CreateContact(filePath, fieldMatch, tag string) (string, error) {
+func (sdk *Sdk) CreateContact(filePath, attrs, tag string) (string, error) {
 	sdkC := sdk.connect
-	extraData := fmt.Sprintf(`attrs={"%s":"customer-id"}&&tags=%s`, fieldMatch, tag)
+	extraData := fmt.Sprintf(`attrs=%s&&tags=%s`, attrs, tag)
 
 	return sdkC.rq.PostFile("/contacts/upload", filePath, "file", extraData)
 }
