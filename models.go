@@ -34,14 +34,34 @@ type Tracker struct {
 
 // Segment struct for information segment
 type Segment struct {
-	ID          string     `json:"id"`
-	IsEnabled   bool       `json:"is_enabled"`
-	CreateAt    *time.Time `json:"created_at"`
-	UpdateAt    *time.Time `json:"updated_at"`
-	Type        string     `json:"type"`
-	Name        string     `json:"name"`
-	Alias       string     `json:"alias"`
-	Description string     `json:"description"`
+	Name            string            `json:"name"`
+	Alias           string            `json:"alias"`
+	Description     string            `json:"description"`
+	IsEnabled       bool              `json:"is_enabled"`
+	Triggers        []*SegmentTrigger `json:"triggers"`
+	TriggerExcludes []string          `json:"trigger_excludes"`
+	DelayAmount     string            `json:"delay_amount"`
+	DelayUnit       string            `json:"delay_unit"`
+	// Operator        string            `json:"operator"`
+	// Trigger         string            `json:"trigger"`
+	// ID              string            `json:"id"`
+	// IsCustom        bool              `json:"is_custom"`
+	// CreateAt        *time.Time        `json:"created_at"`
+	// UpdateAt        *time.Time        `json:"updated_at"`
+	// Type            string            `json:"type"`
+	// Excluders string `json:"excluders"`
+}
+
+// SegmentTrigger is segment trigger
+type SegmentTrigger struct {
+	Type       string             `json:"type"`
+	Conditions []SegmentCondition `json:"conditions"`
+}
+
+// SegmentCondition is segment condition
+type SegmentCondition struct {
+	Operation string `json:"operation"`
+	Trigger   string `json:"trigger"`
 }
 
 // NewSegment for parsing to segment struct
@@ -55,8 +75,11 @@ func NewSegment(intf interface{}) *Segment {
 	if err != nil {
 		return segment
 	}
-	now := time.Now()
-	segment.ID = uuid.New().String()
-	segment.CreateAt = &now
+	segment.Description = ""
+	for _, st := range segment.Triggers {
+		for _, tc := range st.Conditions {
+			tc.Trigger = uuid.New().String()
+		}
+	}
 	return segment
 }
