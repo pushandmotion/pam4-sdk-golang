@@ -308,6 +308,10 @@ func (rqt *Requester) PostJSONRHC(path string, jsonBody interface{}, headers map
 	}
 
 	rqt.logger.Debug(fmt.Sprintf("[RQT POST-RESP]: %s %s", url, rqt.truncateLogBody(body)))
+
+	if res.StatusCode >= 400 {
+		return res, body, NewErrM(res.Status)
+	}
 	return res, body, nil
 }
 
@@ -412,6 +416,10 @@ func (rqt *Requester) PutJSONRHC(path string, jsonBody interface{}, headers map[
 	}
 
 	rqt.logger.Debug(fmt.Sprintf("[RQT PUT-RESP]: %s %s", url, rqt.truncateLogBody(body)))
+
+	if res.StatusCode >= 400 {
+		return res, body, NewErrM(res.Status)
+	}
 	return res, body, nil
 }
 
