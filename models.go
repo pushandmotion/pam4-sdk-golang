@@ -54,8 +54,8 @@ type Segment struct {
 
 // SegmentTrigger is segment trigger
 type SegmentTrigger struct {
-	Type       string             `json:"type"`
-	Conditions []SegmentCondition `json:"conditions"`
+	Type       string        `json:"type"`
+	Conditions []interface{} `json:"conditions"`
 }
 
 // SegmentCondition is segment condition
