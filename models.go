@@ -3,8 +3,6 @@ package pam4sdk
 import (
 	"encoding/json"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // SDKConnector is the information that using for requestor
@@ -58,12 +56,6 @@ type SegmentTrigger struct {
 	Conditions []interface{} `json:"conditions"`
 }
 
-// SegmentCondition is segment condition
-type SegmentCondition struct {
-	Operation string `json:"operation"`
-	Trigger   string `json:"trigger"`
-}
-
 // NewSegment for parsing to segment struct
 func NewSegment(intf interface{}) *Segment {
 	segment := &Segment{}
@@ -76,10 +68,5 @@ func NewSegment(intf interface{}) *Segment {
 		return segment
 	}
 	segment.Description = ""
-	for _, st := range segment.Triggers {
-		for _, tc := range st.Conditions {
-			tc.Trigger = uuid.New().String()
-		}
-	}
 	return segment
 }
