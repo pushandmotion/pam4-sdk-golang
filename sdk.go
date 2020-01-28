@@ -32,6 +32,7 @@ type ISdk interface {
 
 	// Contact
 	CreateContact(file string, fieldMatch string, tags string) (string, error)
+	UpdateContactAttr(contactID string, body *Contact) (string, error)
 	GetContacts(q string, page, limit string) (string, error)
 }
 
@@ -281,6 +282,14 @@ func (sdk *Sdk) CreateContact(filePath, attrs, tags string) (string, error) {
 	extraData := fmt.Sprintf(`attrs=%s&&tags=%s`, attrs, tags)
 
 	return sdkC.rq.PostFile("/contacts/upload", filePath, "file", extraData)
+}
+
+// UpdateContactAttr return contact information when update success
+func (sdk *Sdk) UpdateContactAttr(contactID string, body *Contact) (string, error) {
+	sdkC := sdk.connect
+	updateContact := fmt.Sprintf("/contacts/%s", contactID)
+
+	return sdkC.rq.PutJSON(updateContact, body)
 }
 
 // GetContacts return contact list

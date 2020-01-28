@@ -56,6 +56,11 @@ type SegmentTrigger struct {
 	Conditions []interface{} `json:"conditions"`
 }
 
+// Contact struct for information contact
+type Contact struct {
+	Attrs map[string]interface{} `json:"attrs"`
+}
+
 // NewSegment for parsing to segment struct
 func NewSegment(intf interface{}) *Segment {
 	segment := &Segment{}
@@ -69,4 +74,18 @@ func NewSegment(intf interface{}) *Segment {
 	}
 	segment.Description = ""
 	return segment
+}
+
+// NewContact for parsing to segment struct
+func NewContact(intf interface{}) *Contact {
+	contact := &Contact{}
+	bytes, err := json.Marshal(intf)
+	if err != nil {
+		return contact
+	}
+	err = json.Unmarshal(bytes, contact)
+	if err != nil {
+		return contact
+	}
+	return contact
 }
