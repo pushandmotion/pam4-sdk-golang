@@ -292,5 +292,5 @@ func (sdk *Sdk) GetContacts(searchKeyword string, page, limit string) (string, e
 		"limit": limit,
 	}
 
-	return sdkC.rq.Get("/api/contacts", params)
+	return sdkC.rq.Get("/contacts", params)
 }
