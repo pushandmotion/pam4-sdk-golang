@@ -265,7 +265,7 @@ func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
 
 // GetCampaignsStats return number of campaign in campaigns amount
 func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
-	sdkC := sdk.cms
+	sdkC := sdk.connect
 	p := map[string]string{}
 	if len(campaignIDs) > 0 {
 		p["id"] = strings.Join(campaignIDs, ",")
