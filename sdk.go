@@ -29,6 +29,7 @@ type ISdk interface {
 	// Campaigns
 	GetCampaigns(q string, page int, limit int) (string, error)
 	GetCampaignsStats(campaignIDs []string) (string, error)
+	GetCampaignDetail(campaignID string) (string, error)
 
 	// Contact
 	CreateContact(file string, fieldMatch string, tags string) (string, error)
@@ -274,6 +275,14 @@ func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
 	campaignStat := fmt.Sprintf("/campaigns/stat")
 
 	return sdkC.rq.Get(campaignStat, p)
+}
+
+// GetCampaignDetail return detail of Campaign
+func (sdk *Sdk) GetCampaignDetail(campaignID string) (string, error) {
+	sdkC := sdk.connect
+	campaigns := fmt.Sprintf("/campaigns/%s", campaignID)
+
+	return sdkC.rq.Get(campaigns, nil)
 }
 
 // CreateContact return nil when create success
