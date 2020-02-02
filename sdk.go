@@ -256,7 +256,7 @@ func (sdk *Sdk) CreateCampaign(body *CampaignPostBody) (string, error) {
 // UpdateCampaign update campaign by id
 func (sdk *Sdk) UpdateCampaign(id string, body *CampaignUpdateBody) (string, error) {
 	sdkC := sdk.cms
-	endpoint := fmt.Sprintf("/campaign/%s", id)
+	endpoint := fmt.Sprintf("/campaigns/%s", id)
 
 	return sdkC.rq.PutJSON(endpoint, body)
 }
