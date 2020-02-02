@@ -28,7 +28,7 @@ type ISdk interface {
 
 	// Campaigns
 	CreateCampaign(body *CampaignPostBody) (string, error)
-	UpdateCampaign(id string, body *CampaignUpdateBody)
+	UpdateCampaign(id string, body *CampaignUpdateBody) (string, error)
 	GetCampaigns(q string, page int, limit int) (string, error)
 	GetCampaignsStats(campaignIDs []string) (string, error)
 	GetCampaignDetail(campaignID string) (string, error)
