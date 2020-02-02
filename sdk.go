@@ -306,7 +306,7 @@ func (sdk *Sdk) GetCampaignDetail(campaignID string) (string, error) {
 // DeleteCampaign delete campaign by id
 func (sdk *Sdk) DeleteCampaign(campaignID string) (string, error) {
 	sdkC := sdk.cms
-	endpoint := fmt.Sprintf("campaigns/%s", campaignID)
+	endpoint := fmt.Sprintf("/campaigns/%s", campaignID)
 
 	return sdkC.rq.Get(endpoint, nil)
 }
