@@ -247,14 +247,14 @@ func (sdk *Sdk) DeleteSegment(segmentID string) (string, error) {
 }
 
 // CreateCampaign create campaign
-func (sdk *Sdk) CreateCampaign(body interface{}) (string, error) {
+func (sdk *Sdk) CreateCampaign(body *CampaignPostBody) (string, error) {
 	sdkC := sdk.cms
 
 	return sdkC.rq.PostJSON("/campaigns", body)
 }
 
 // UpdateCampaign update campaign by id
-func (sdk *Sdk) UpdateCampaign(id string, body interface{}) (string, error) {
+func (sdk *Sdk) UpdateCampaign(id string, body *CampaignUpdateBody) (string, error) {
 	sdkC := sdk.cms
 	endpoint := fmt.Sprintf("/campaigns/%s", id)
 
