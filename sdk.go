@@ -308,7 +308,7 @@ func (sdk *Sdk) DeleteCampaign(campaignID string) (string, error) {
 	sdkC := sdk.cms
 	endpoint := fmt.Sprintf("/campaigns/%s", campaignID)
 
-	return sdkC.rq.Get(endpoint, nil)
+	return sdkC.rq.Delete(endpoint, nil)
 }
 
 // CreateContact return nil when create success
