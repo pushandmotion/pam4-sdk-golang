@@ -92,33 +92,32 @@ func NewContact(intf interface{}) *Contact {
 
 // CampaignPostBody is information of body
 type CampaignPostBody struct {
-	IsEnabled      bool   `json:"is_enabled"`
-	Alias          string `json:"alias"`
-	State          string `json:"state"`
-	Name           string `json:"name"`
-	NonExpired     bool   `json:"non_expired"`
-	DatePushRanges []struct {
-		StartTime string `json:"start_time"`
-		EndTime   string `json:"end_time"`
-	} `json:"date_push_ranges"`
-	DateWorkingRange []string `json:"date_working_range"`
+	IsEnabled        bool              `json:"is_enabled"`
+	Alias            string            `json:"alias"`
+	State            string            `json:"state"`
+	Name             string            `json:"name"`
+	NonExpired       bool              `json:"non_expired"`
+	DatePushRanges   []*DatePushRanges `json:"date_push_ranges"`
+	DateWorkingRange []string          `json:"date_working_range"`
 }
 
 // CampaignUpdateBody is information of update body
 type CampaignUpdateBody struct {
-	Alias              string        `json:"alias"`
-	Name               string        `json:"name"`
-	State              string        `json:"state"`
-	IsEnabled          bool          `json:"is_enabled"`
-	CampaignCategoryID string        `json:"campaign_category_id"`
-	NonExpired         bool          `json:"non_expired"`
-	ProductsID         []interface{} `json:"products_id"`
-	EngageTagsAdd      []interface{} `json:"engage_tags_add"`
-	EngageTagsRemove   []interface{} `json:"engage_tags_remove"`
-	Tags               []interface{} `json:"tags"`
-	DatePushRanges     []struct {
-		StartTime string `json:"start_time"`
-		EndTime   string `json:"end_time"`
-	} `json:"date_push_ranges"`
-	DateWorkingRange []string `json:"date_working_range"`
+	Alias              string            `json:"alias"`
+	Name               string            `json:"name"`
+	State              string            `json:"state"`
+	IsEnabled          bool              `json:"is_enabled"`
+	CampaignCategoryID string            `json:"campaign_category_id"`
+	NonExpired         bool              `json:"non_expired"`
+	ProductsID         []interface{}     `json:"products_id"`
+	EngageTagsAdd      []interface{}     `json:"engage_tags_add"`
+	EngageTagsRemove   []interface{}     `json:"engage_tags_remove"`
+	Tags               []interface{}     `json:"tags"`
+	DatePushRanges     []*DatePushRanges `json:"date_push_ranges"`
+	DateWorkingRange   []string          `json:"date_working_range"`
+}
+
+type DatePushRanges struct {
+	StartTime string `json:"start_time"`
+	EndTime   string `json:"end_time"`
 }
