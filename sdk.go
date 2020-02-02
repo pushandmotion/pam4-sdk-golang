@@ -279,7 +279,7 @@ func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
 
 // GetCampaignDetail return detail of Campaign
 func (sdk *Sdk) GetCampaignDetail(campaignID string) (string, error) {
-	sdkC := sdk.connect
+	sdkC := sdk.cms
 	campaigns := fmt.Sprintf("/campaigns/%s", campaignID)
 
 	return sdkC.rq.Get(campaigns, nil)
