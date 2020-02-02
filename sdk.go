@@ -27,8 +27,8 @@ type ISdk interface {
 	DeleteSegment(segmentID string) (string, error)
 
 	// Campaigns
-	CreateCampaign(body interface{}) (string, error)
-	UpdateCampaign(id string, body interface{}) (string, error)
+	CreateCampaign(body *CampaignPostBody) (string, error)
+	UpdateCampaign(id string, body *CampaignUpdateBody) (string, error)
 	GetCampaigns(q string, page int, limit int) (string, error)
 	GetCampaignsStats(campaignIDs []string) (string, error)
 	GetCampaignDetail(campaignID string) (string, error)
