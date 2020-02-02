@@ -109,7 +109,6 @@ type CampaignUpdateBody struct {
 	IsEnabled          bool              `json:"is_enabled"`
 	CampaignCategoryID string            `json:"campaign_category_id"`
 	NonExpired         bool              `json:"non_expired"`
-	ProductsID         []interface{}     `json:"products_id"`
 	EngageTagsAdd      []interface{}     `json:"engage_tags_add"`
 	EngageTagsRemove   []interface{}     `json:"engage_tags_remove"`
 	Tags               []interface{}     `json:"tags"`
