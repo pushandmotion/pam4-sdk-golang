@@ -27,9 +27,12 @@ type ISdk interface {
 	DeleteSegment(segmentID string) (string, error)
 
 	// Campaigns
+	CreateCampaign(body *CampaignPostBody) (string, error)
+	UpdateCampaign(id string, body *CampaignUpdateBody)
 	GetCampaigns(q string, page int, limit int) (string, error)
 	GetCampaignsStats(campaignIDs []string) (string, error)
 	GetCampaignDetail(campaignID string) (string, error)
+	DeleteCampaign(campaignID string) (string, error)
 
 	// Contact
 	CreateContact(file string, fieldMatch string, tags string) (string, error)
@@ -243,6 +246,21 @@ func (sdk *Sdk) DeleteSegment(segmentID string) (string, error) {
 	return sdkC.rq.Delete(deleteSegment, nil)
 }
 
+// CreateCampaign create campaign
+func (sdk *Sdk) CreateCampaign(body *CampaignPostBody) (string, error) {
+	sdkC := sdk.cms
+
+	return sdkC.rq.PostJSON("/campaigns", body)
+}
+
+// UpdateCampaign update campaign by id
+func (sdk *Sdk) UpdateCampaign(id string, body *CampaignUpdateBody) (string, error) {
+	sdkC := sdk.cms
+	endpoint := fmt.Sprintf("/campaign/%s", id)
+
+	return sdkC.rq.PutJSON(endpoint, body)
+}
+
 // GetCampaigns return list of campaigns
 func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
 	sdkC := sdk.cms
@@ -283,6 +301,14 @@ func (sdk *Sdk) GetCampaignDetail(campaignID string) (string, error) {
 	campaigns := fmt.Sprintf("/campaigns/%s", campaignID)
 
 	return sdkC.rq.Get(campaigns, nil)
+}
+
+// DeleteCampaign delete campaign by id
+func (sdk *Sdk) DeleteCampaign(campaignID string) (string, error) {
+	sdkC := sdk.cms
+	endpoint := fmt.Sprintf("campaigns/%s", campaignID)
+
+	return sdkC.rq.Get(endpoint, nil)
 }
 
 // CreateContact return nil when create success
