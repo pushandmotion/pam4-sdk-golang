@@ -120,3 +120,17 @@ type DatePushRanges struct {
 	StartTime string `json:"start_time"`
 	EndTime   string `json:"end_time"`
 }
+
+type CampaignTriger struct {
+	IsCustom       bool     `json:"is_custom"`
+	TriggerSavedID string   `json:"trigger_saved_id"`
+	Triggers       Triggers `json:"triggers"`
+}
+
+type Triggers struct {
+	DelayAmount     string        `json:"delay_amount"`
+	DelayUnit       string        `json:"delay_unit"`
+	Triggers        []interface{} `json:"triggers"`
+	TriggerExcludes []string      `json:"trigger_excludes"`
+	IsEnabled       bool          `json:"is_enabled"`
+}

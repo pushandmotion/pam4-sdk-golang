@@ -30,6 +30,7 @@ type ISdk interface {
 	CreateCampaign(body *CampaignPostBody) (string, error)
 	UpdateCampaign(id string, body *CampaignUpdateBody) (string, error)
 	GetCampaigns(q string, page int, limit int) (string, error)
+	UpdateCampaignTrigger(id string, body *CampaignTriger) (string, error)
 	GetCampaignsStats(campaignIDs []string) (string, error)
 	GetCampaignDetail(campaignID string) (string, error)
 	DeleteCampaign(campaignID string) (string, error)
@@ -280,6 +281,14 @@ func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
 	campaigns := fmt.Sprintf("/campaigns")
 
 	return sdkC.rq.Get(campaigns, p)
+}
+
+// UpdateCampaignTrigger update segment in campaign
+func (sdk *Sdk) UpdateCampaignTrigger(id string, body *CampaignTriger) (string, error) {
+	sdkC := sdk.cms
+	endpoint := fmt.Sprintf("/campaigns/%s/triggers")
+
+	return sdkC.rq.PutJSON(endpoint, body)
 }
 
 // GetCampaignsStats return number of campaign in campaigns amount
