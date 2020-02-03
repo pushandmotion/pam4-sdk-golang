@@ -122,9 +122,9 @@ type DatePushRanges struct {
 }
 
 type CampaignTriger struct {
-	IsCustom       bool     `json:"is_custom"`
-	TriggerSavedID string   `json:"trigger_saved_id"`
-	Triggers       Triggers `json:"triggers"`
+	IsCustom       bool      `json:"is_custom"`
+	TriggerSavedID string    `json:"trigger_saved_id"`
+	Triggers       *Triggers `json:"triggers"`
 }
 
 type Triggers struct {
