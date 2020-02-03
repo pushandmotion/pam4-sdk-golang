@@ -286,7 +286,7 @@ func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
 // UpdateCampaignTrigger update segment in campaign
 func (sdk *Sdk) UpdateCampaignTrigger(id string, body *CampaignTriger) (string, error) {
 	sdkC := sdk.cms
-	endpoint := fmt.Sprintf("/campaigns/%s/triggers")
+	endpoint := fmt.Sprintf("/campaigns/%s/triggers", id)
 
 	return sdkC.rq.PutJSON(endpoint, body)
 }
