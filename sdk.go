@@ -34,6 +34,9 @@ type ISdk interface {
 	GetCampaignsStats(campaignIDs []string) (string, error)
 	GetCampaignDetail(campaignID string) (string, error)
 	DeleteCampaign(campaignID string) (string, error)
+	GetMedia(isAll, isExcludeDisabled, MediaType string) (string, error)
+	GetMessageByMediaType(mediaType string) (string, error)
+	UpdateMessageByMediaType(MediaType string, body *UpdateMessageBody) (string, error)
 
 	// Contact
 	CreateContact(file string, fieldMatch string, tags string) (string, error)
@@ -346,4 +349,34 @@ func (sdk *Sdk) GetContacts(searchKeyword string, page, limit string) (string, e
 	}
 
 	return sdkC.rq.Get("/contacts", params)
+}
+
+// GetMedia return media list
+func (sdk *Sdk) GetMedia(isAll, isExcludeDisabled, MediaType string) (string, error) {
+	sdkC := sdk.cms
+	params := map[string]string{
+		"is_all":           isAll,
+		"exclude_disabled": isExcludeDisabled,
+		"type":             MediaType,
+	}
+
+	return sdkC.rq.Get("/media", params)
+}
+
+// GetMessageByMediaType return message setting by type
+func (sdk *Sdk) GetMessageByMediaType(campaignID, mediaType string) (string, error) {
+	sdkC := sdk.cms
+	params := map[string]string{
+		"type": mediaType,
+	}
+
+	return sdkC.rq.Get("/campaigns/%s", params)
+}
+
+// UpdateMessageByMediaType update message by media type
+func (sdk *Sdk) UpdateMessageByMediaType(mediaType string, body *UpdateMessageBody) (string, error) {
+	sdkC := sdk.cms
+	endpoint := fmt.Sprintf("/campaigns/%s", mediaType)
+
+	return sdkC.rq.PutJSON(endpoint, body)
 }

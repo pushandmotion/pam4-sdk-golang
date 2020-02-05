@@ -134,3 +134,15 @@ type Triggers struct {
 	TriggerExcludes []string      `json:"trigger_excludes"`
 	IsEnabled       bool          `json:"is_enabled"`
 }
+
+type UpdateMessageBody struct {
+	Message struct {
+		Title string        `json:"title"`
+		Files []interface{} `json:"files"`
+		Langs struct {
+		} `json:"_langs"`
+	} `json:"message"`
+	MediaID   []string `json:"media_id"`
+	IsEnabled bool     `json:"is_enabled"`
+	Type      string   `json:"type"`
+}
