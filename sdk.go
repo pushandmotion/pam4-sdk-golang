@@ -35,7 +35,7 @@ type ISdk interface {
 	GetCampaignDetail(campaignID string) (string, error)
 	DeleteCampaign(campaignID string) (string, error)
 	GetMedia(isAll, isExcludeDisabled, MediaType string) (string, error)
-	GetMessageByMediaType(mediaType string) (string, error)
+	GetMessageByMediaType(campaignID, mediaType string) (string, error)
 	UpdateMessageByMediaType(MediaType string, body *UpdateMessageBody) (string, error)
 
 	// Contact
