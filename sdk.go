@@ -366,7 +366,7 @@ func (sdk *Sdk) GetMedia(isAll, isExcludeDisabled, MediaType string) (string, er
 // UpdateMessageSMS update message by media type
 func (sdk *Sdk) UpdateMessageSMS(campaignID string, body *UpdateMessageSMS) (*SMSMessageResponse, string, error) {
 	sdkC := sdk.cms
-	endpoint := fmt.Sprintf("/campaigns/%s/message/sms", campaignID)
+	endpoint := fmt.Sprintf("/campaigns/%s/messages/sms", campaignID)
 
 	resultStr, err := sdkC.rq.PutJSON(endpoint, body)
 
@@ -390,7 +390,7 @@ func (sdk *Sdk) UpdateMessagePushNotification(
 	body *UpdateMessagePushNotification,
 ) (*PushNotificationMessageResponse, string, error) {
 	sdkC := sdk.cms
-	endpoint := fmt.Sprintf("/campaigns/%s/message/mobile_notification", campaignID)
+	endpoint := fmt.Sprintf("/campaigns/%s/messages/mobile_notification", campaignID)
 
 	resultStr, err := sdkC.rq.PutJSON(endpoint, body)
 
