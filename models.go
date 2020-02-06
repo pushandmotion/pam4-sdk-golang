@@ -127,6 +127,7 @@ type CampaignTriger struct {
 	Triggers       *Triggers `json:"triggers"`
 }
 
+// Triggers is setting campaign for push campaign
 type Triggers struct {
 	DelayAmount     string        `json:"delay_amount"`
 	DelayUnit       string        `json:"delay_unit"`
@@ -135,7 +136,8 @@ type Triggers struct {
 	IsEnabled       bool          `json:"is_enabled"`
 }
 
-type UpdateMessageBody struct {
+// UpdateMessageSMS sms request body
+type UpdateMessageSMS struct {
 	Message struct {
 		Title string        `json:"title"`
 		Files []interface{} `json:"files"`
@@ -145,4 +147,76 @@ type UpdateMessageBody struct {
 	MediaID   []string `json:"media_id"`
 	IsEnabled bool     `json:"is_enabled"`
 	Type      string   `json:"type"`
+}
+
+// UpdateMessagePushNotification push notification requset body
+type UpdateMessagePushNotification struct {
+	ID         string      `json:"id"`
+	IsEnabled  bool        `json:"is_enabled"`
+	CreatedAt  string      `json:"created_at"`
+	UpdatedAt  string      `json:"updated_at"`
+	DeletedAt  interface{} `json:"deleted_at"`
+	CampaignID string      `json:"campaign_id"`
+	Message    struct {
+		Icon        string `json:"icon"`
+		Banner      string `json:"banner"`
+		URL         string `json:"url"`
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		JSONData    struct {
+			Oijk string `json:"oijk"`
+			Mkll string `json:"mkll"`
+			Kjk  string `json:"kjk"`
+			Jj   string `json:"jj"`
+		} `json:"json_data"`
+		Langs struct {
+		} `json:"_langs"`
+	} `json:"message"`
+	MediaTypeID string `json:"media_type_id"`
+	MediaType   struct {
+		ID          string      `json:"id"`
+		IsEnabled   bool        `json:"is_enabled"`
+		CreatedAt   string      `json:"created_at"`
+		UpdatedAt   string      `json:"updated_at"`
+		DeletedAt   interface{} `json:"deleted_at"`
+		Name        string      `json:"name"`
+		Alias       string      `json:"alias"`
+		Description string      `json:"description"`
+	} `json:"media_type"`
+	Media []struct {
+		ID          string      `json:"id"`
+		IsEnabled   bool        `json:"is_enabled"`
+		CreatedAt   string      `json:"created_at"`
+		UpdatedAt   string      `json:"updated_at"`
+		DeletedAt   interface{} `json:"deleted_at"`
+		Name        string      `json:"name"`
+		Alias       string      `json:"alias"`
+		Description string      `json:"description"`
+		MediaTypeID string      `json:"media_type_id"`
+		MediaType   struct {
+			ID          string      `json:"id"`
+			IsEnabled   bool        `json:"is_enabled"`
+			CreatedAt   string      `json:"created_at"`
+			UpdatedAt   string      `json:"updated_at"`
+			DeletedAt   interface{} `json:"deleted_at"`
+			Name        string      `json:"name"`
+			Alias       string      `json:"alias"`
+			Description string      `json:"description"`
+		} `json:"media_type"`
+		Setting struct {
+			Type     string `json:"type"`
+			AuthKey  string `json:"auth_key"`
+			KeyID    string `json:"key_id"`
+			TeamID   string `json:"team_id"`
+			BundleID string `json:"bundle_id"`
+		} `json:"setting"`
+	} `json:"media"`
+	MediaTypeAlias string   `json:"media_type_alias"`
+	MediaID        []string `json:"media_id"`
+}
+
+// UpdateMessageBody is request body for update message campaign
+type UpdateMessageBody struct {
+	SMS              UpdateMessageSMS
+	PushNotification UpdateMessagePushNotification
 }
