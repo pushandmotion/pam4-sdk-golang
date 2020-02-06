@@ -35,8 +35,11 @@ type ISdk interface {
 	GetCampaignDetail(campaignID string) (string, error)
 	DeleteCampaign(campaignID string) (string, error)
 	GetMedia(isAll, isExcludeDisabled, MediaType string) (string, error)
-	GetMessageByMediaType(campaignID, mediaType string) (string, error)
-	UpdateMessageByMediaType(MediaType string, body *UpdateMessageBody) (string, error)
+	UpdateMessageSMS(campaignID, body *UpdateMessageSMS) (*SMSMessageResponse, string, error)
+	UpdateMessagePushNotification(
+		campaignID,
+		body *UpdateMessagePushNotification,
+	) (*PushNotificationMessageResponse, string, error)
 
 	// Contact
 	CreateContact(file string, fieldMatch string, tags string) (string, error)
@@ -363,20 +366,47 @@ func (sdk *Sdk) GetMedia(isAll, isExcludeDisabled, MediaType string) (string, er
 	return sdkC.rq.Get("/media", params)
 }
 
-// GetMessageByMediaType return message setting by type
-func (sdk *Sdk) GetMessageByMediaType(campaignID, mediaType string) (string, error) {
+// UpdateMessageSMS update message by media type
+func (sdk *Sdk) UpdateMessageSMS(campaignID, body *UpdateMessageSMS) (*SMSMessageResponse, string, error) {
 	sdkC := sdk.cms
-	params := map[string]string{
-		"type": mediaType,
+	endpoint := fmt.Sprintf("/campaigns/%s/message/sms", campaignID)
+
+	resultStr, err := sdkC.rq.PutJSON(endpoint, body)
+
+	if err != nil {
+		return &SMSMessageResponse{}, "", err
 	}
 
-	return sdkC.rq.Get("/campaigns/%s", params)
+	res := &SMSMessageResponse{}
+	err = json.Unmarshal([]byte(resultStr), res)
+
+	if err != nil {
+		return &SMSMessageResponse{}, "", err
+	}
+
+	return res, resultStr, nil
 }
 
-// UpdateMessageByMediaType update message by media type
-func (sdk *Sdk) UpdateMessageByMediaType(mediaType string, body *UpdateMessageBody) (string, error) {
+// UpdateMessagePushNotification message by media type
+func (sdk *Sdk) UpdateMessagePushNotification(
+	campaignID,
+	body *UpdateMessagePushNotification,
+) (*PushNotificationMessageResponse, string, error) {
 	sdkC := sdk.cms
-	endpoint := fmt.Sprintf("/campaigns/%s", mediaType)
+	endpoint := fmt.Sprintf("/campaigns/%s/message/mobile_notification", campaignID)
 
-	return sdkC.rq.PutJSON(endpoint, body)
+	resultStr, err := sdkC.rq.PutJSON(endpoint, body)
+
+	if err != nil {
+		return &PushNotificationMessageResponse{}, "", err
+	}
+
+	res := &PushNotificationMessageResponse{}
+	err = json.Unmarshal([]byte(resultStr), res)
+
+	if err != nil {
+		return &PushNotificationMessageResponse{}, "", err
+	}
+
+	return res, resultStr, nil
 }
