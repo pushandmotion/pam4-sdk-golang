@@ -35,11 +35,8 @@ type ISdk interface {
 	GetCampaignDetail(campaignID string) (string, error)
 	DeleteCampaign(campaignID string) (string, error)
 	GetMedia(isAll, isExcludeDisabled, MediaType string) (string, error)
-	UpdateMessageSMS(campaignID, body *UpdateMessageSMS) (*SMSMessageResponse, string, error)
-	UpdateMessagePushNotification(
-		campaignID,
-		body *UpdateMessagePushNotification,
-	) (*PushNotificationMessageResponse, string, error)
+	UpdateMessageSMS(campaignID string, body *UpdateMessageSMS) (*SMSMessageResponse, string, error)
+	UpdateMessagePushNotification(campaignID string, body *UpdateMessagePushNotification) (*PushNotificationMessageResponse, string, error)
 
 	// Contact
 	CreateContact(file string, fieldMatch string, tags string) (string, error)
@@ -367,7 +364,7 @@ func (sdk *Sdk) GetMedia(isAll, isExcludeDisabled, MediaType string) (string, er
 }
 
 // UpdateMessageSMS update message by media type
-func (sdk *Sdk) UpdateMessageSMS(campaignID, body *UpdateMessageSMS) (*SMSMessageResponse, string, error) {
+func (sdk *Sdk) UpdateMessageSMS(campaignID string, body *UpdateMessageSMS) (*SMSMessageResponse, string, error) {
 	sdkC := sdk.cms
 	endpoint := fmt.Sprintf("/campaigns/%s/message/sms", campaignID)
 
@@ -389,7 +386,7 @@ func (sdk *Sdk) UpdateMessageSMS(campaignID, body *UpdateMessageSMS) (*SMSMessag
 
 // UpdateMessagePushNotification message by media type
 func (sdk *Sdk) UpdateMessagePushNotification(
-	campaignID,
+	campaignID string,
 	body *UpdateMessagePushNotification,
 ) (*PushNotificationMessageResponse, string, error) {
 	sdkC := sdk.cms
