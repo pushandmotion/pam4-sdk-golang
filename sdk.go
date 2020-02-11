@@ -29,7 +29,7 @@ type ISdk interface {
 	// Campaigns
 	CreateCampaign(body *CampaignPostBody) (string, error)
 	UpdateCampaign(id string, body *CampaignUpdateBody) (string, error)
-	GetCampaigns(q string, page int, limit int) (string, error)
+	GetCampaigns(q, page, limit string) (string, error)
 	UpdateCampaignTrigger(id string, body *CampaignTriger) (string, error)
 	GetCampaignsStats(campaignIDs []string) (string, error)
 	GetCampaignDetail(campaignID string) (string, error)
@@ -266,18 +266,18 @@ func (sdk *Sdk) UpdateCampaign(id string, body *CampaignUpdateBody) (string, err
 }
 
 // GetCampaigns return list of campaigns
-func (sdk *Sdk) GetCampaigns(q string, page int, limit int) (string, error) {
+func (sdk *Sdk) GetCampaigns(q, page, limit string) (string, error) {
 	sdkC := sdk.cms
 	p := map[string]string{}
 	if len(q) > 0 {
 		p["q"] = q
 	}
 
-	if page > 0 {
+	if page != "" {
 		p["page"] = fmt.Sprintf("%d", page)
 	}
 
-	if limit > 0 {
+	if limit != "" {
 		p["limit"] = fmt.Sprintf("%d", limit)
 	}
 
