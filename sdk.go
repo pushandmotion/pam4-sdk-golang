@@ -274,11 +274,11 @@ func (sdk *Sdk) GetCampaigns(q, page, limit string) (string, error) {
 	}
 
 	if page != "" {
-		p["page"] = fmt.Sprintf("%d", page)
+		p["page"] = page
 	}
 
 	if limit != "" {
-		p["limit"] = fmt.Sprintf("%d", limit)
+		p["limit"] = limit
 	}
 
 	campaigns := fmt.Sprintf("/campaigns")
