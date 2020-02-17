@@ -138,7 +138,7 @@ type Triggers struct {
 
 // UpdateMessageSMS sms request body
 type UpdateMessageSMS struct {
-	Message     SMSMessage         `json:"message"`
+	Message     *SMSMessage        `json:"message"`
 	MediaID     []string           `json:"media_id"`
 	IsEnabled   bool               `json:"is_enabled"`
 	SenderNames map[string]*string `json:"sender_names"`
@@ -151,10 +151,10 @@ type SMSMessage struct {
 
 // UpdateMessagePushNotification push notification requset body
 type UpdateMessagePushNotification struct {
-	Message     PushNotificationMessage `json:"message"`
-	MediaID     []string                `json:"media_id"`
-	IsEnabled   bool                    `json:"is_enabled"`
-	SenderNames map[string]*string      `json:"sender_names"`
+	Message     *PushNotificationMessage `json:"message"`
+	MediaID     []string                 `json:"media_id"`
+	IsEnabled   bool                     `json:"is_enabled"`
+	SenderNames map[string]*string       `json:"sender_names"`
 }
 
 // PushNotificationMessage message for push notification
