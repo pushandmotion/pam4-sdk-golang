@@ -214,7 +214,7 @@ func (sdk *Sdk) GetSegmentsStats(segmentIDs []string) (string, error) {
 		p["id"] = strings.Join(segmentIDs, ",")
 	}
 
-	segmentStat := fmt.Sprintf("/triggers/stat")
+	segmentStat := fmt.Sprintf("/api/triggers/stat")
 
 	return sdkC.rq.Get(segmentStat, p)
 }
@@ -303,7 +303,7 @@ func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
 		p["id"] = strings.Join(campaignIDs, ",")
 	}
 
-	campaignStat := fmt.Sprintf("/campaigns/stat")
+	campaignStat := fmt.Sprintf("/api/campaigns/stat")
 
 	return sdkC.rq.Get(campaignStat, p)
 }
@@ -329,13 +329,13 @@ func (sdk *Sdk) CreateContact(filePath, attrs, tags string) (string, error) {
 	sdkC := sdk.connect
 	extraData := fmt.Sprintf(`attrs=%s&&tags=%s`, attrs, tags)
 
-	return sdkC.rq.PostFile("/contacts/upload", filePath, "file", extraData)
+	return sdkC.rq.PostFile("/api/contacts/upload", filePath, "file", extraData)
 }
 
 // UpdateContactAttr return contact information when update success
 func (sdk *Sdk) UpdateContactAttr(contactID string, body *Contact) (string, error) {
 	sdkC := sdk.connect
-	updateContact := fmt.Sprintf("/contacts/%s", contactID)
+	updateContact := fmt.Sprintf("/api/contacts/%s", contactID)
 
 	return sdkC.rq.PutJSON(updateContact, body)
 }
@@ -349,14 +349,14 @@ func (sdk *Sdk) GetContacts(searchKeyword string, page, limit string) (string, e
 		"limit": limit,
 	}
 
-	return sdkC.rq.Get("/contacts", params)
+	return sdkC.rq.Get("/api/contacts", params)
 }
 
 // DeleteTagsByContacts return tags available
 func (sdk *Sdk) DeleteTagsByContacts(body *ContactsTags) (string, error) {
 	sdkC := sdk.connect
 
-	return sdkC.rq.DeleteJSON("/contacts/tags", body)
+	return sdkC.rq.DeleteJSON("/api/contacts/tags", body)
 }
 
 // GetMedia return media list
