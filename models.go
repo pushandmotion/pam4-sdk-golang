@@ -61,6 +61,12 @@ type Contact struct {
 	Attrs map[string]interface{} `json:"attrs"`
 }
 
+// ContactsTags struct for delete tags by contacts
+type ContactsTags struct {
+	Contacts []string `json:"contact_ids"`
+	Tags     []string `json:"tags"`
+}
+
 // NewSegment for parsing to segment struct
 func NewSegment(intf interface{}) *Segment {
 	segment := &Segment{}
@@ -79,6 +85,20 @@ func NewSegment(intf interface{}) *Segment {
 // NewContact for parsing to segment struct
 func NewContact(intf interface{}) *Contact {
 	contact := &Contact{}
+	bytes, err := json.Marshal(intf)
+	if err != nil {
+		return contact
+	}
+	err = json.Unmarshal(bytes, contact)
+	if err != nil {
+		return contact
+	}
+	return contact
+}
+
+// NewContactsTags for parsing to ContactsTags struct
+func NewContactsTags(intf interface{}) *ContactsTags {
+	contact := &ContactsTags{}
 	bytes, err := json.Marshal(intf)
 	if err != nil {
 		return contact

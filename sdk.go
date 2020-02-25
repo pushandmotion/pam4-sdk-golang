@@ -42,6 +42,7 @@ type ISdk interface {
 	CreateContact(file string, fieldMatch string, tags string) (string, error)
 	UpdateContactAttr(contactID string, body *Contact) (string, error)
 	GetContacts(q string, page, limit string) (string, error)
+	DeleteTagsByContacts(body *ContactsTags) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -349,6 +350,13 @@ func (sdk *Sdk) GetContacts(searchKeyword string, page, limit string) (string, e
 	}
 
 	return sdkC.rq.Get("/contacts", params)
+}
+
+// DeleteTagsByContacts return tags available
+func (sdk *Sdk) DeleteTagsByContacts(body *ContactsTags) (string, error) {
+	sdkC := sdk.connect
+
+	return sdkC.rq.DeleteJSON("/contacts/tags", body)
 }
 
 // GetMedia return media list
