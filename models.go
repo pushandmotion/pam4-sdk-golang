@@ -158,10 +158,11 @@ type Triggers struct {
 
 // UpdateMessageSMS sms request body
 type UpdateMessageSMS struct {
-	Message     *SMSMessage        `json:"message"`
-	MediaID     []string           `json:"media_id"`
-	IsEnabled   bool               `json:"is_enabled"`
-	SenderNames map[string]*string `json:"sender_names"`
+	Message       *SMSMessage        `json:"message"`
+	MediaID       []string           `json:"media_id"`
+	IsEnabled     bool               `json:"is_enabled"`
+	SenderNames   map[string]*string `json:"sender_names"`
+	MediaAccounts map[string]string  `json:"media_account_ids"`
 }
 
 // SMSMessage for SMS type
