@@ -43,6 +43,7 @@ type ISdk interface {
 	UpdateContactAttr(contactID string, body *Contact) (string, error)
 	GetContacts(q string, page, limit string) (string, error)
 	DeleteTagsByContacts(body *ContactsTags) (string, error)
+	AddTagsByContacts(body *ContactsTags) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -350,6 +351,13 @@ func (sdk *Sdk) GetContacts(searchKeyword string, page, limit string) (string, e
 	}
 
 	return sdkC.rq.Get("/api/contacts", params)
+}
+
+// AddTagsByContacts add tag in old contact
+func (sdk *Sdk) AddTagsByContacts(body *ContactsTags) (string, error) {
+	sdkC := sdk.connect
+
+	return sdkC.rq.PostJSON("/api/contacts/tags", body)
 }
 
 // DeleteTagsByContacts return tags available
