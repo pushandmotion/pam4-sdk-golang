@@ -320,8 +320,8 @@ func (sdk *Sdk) GetCampaignDetail(campaignID string) (string, error) {
 
 // GetCampaignReport return report of Campaign
 func (sdk *Sdk) GetCampaignReport(campaignID string) (string, error) {
-	sdkC := sdk.connect
-	campaigns := fmt.Sprintf("/api/reports/campaigns/%s", campaignID)
+	sdkC := sdk.cms
+	campaigns := fmt.Sprintf("/reports/campaigns/%s", campaignID)
 
 	return sdkC.rq.Get(campaigns, nil)
 }
