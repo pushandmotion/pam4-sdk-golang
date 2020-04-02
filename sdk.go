@@ -33,6 +33,7 @@ type ISdk interface {
 	UpdateCampaignTrigger(id string, body *CampaignTriger) (string, error)
 	GetCampaignsStats(campaignIDs []string) (string, error)
 	GetCampaignDetail(campaignID string) (string, error)
+	GetCampaignDetailByAlias(alias string) (string, error)
 	GetCampaignReport(campaignID string) (string, error)
 	DeleteCampaign(campaignID string) (string, error)
 	GetMedia(isAll, isExcludeDisabled, MediaType string) (string, error)
@@ -318,6 +319,14 @@ func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
 func (sdk *Sdk) GetCampaignDetail(campaignID string) (string, error) {
 	sdkC := sdk.cms
 	campaigns := fmt.Sprintf("/campaigns/%s", campaignID)
+
+	return sdkC.rq.Get(campaigns, nil)
+}
+
+// GetCampaignDetailByAlias return detail of Campaign
+func (sdk *Sdk) GetCampaignDetailByAlias(alias string) (string, error) {
+	sdkC := sdk.cms
+	campaigns := fmt.Sprintf("/campaigns/aliases/%s", alias)
 
 	return sdkC.rq.Get(campaigns, nil)
 }
