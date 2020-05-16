@@ -31,7 +31,7 @@ type ISdk interface {
 	UpdateCampaign(id string, body *CampaignUpdateBody) (string, error)
 	GetCampaigns(q, aliases, page, limit string) (string, error)
 	UpdateCampaignTrigger(id string, body *CampaignTriger) (string, error)
-	GetCampaignsStats(campaignIDs []string, isUniqueContact bool) (string, error)
+	GetCampaignsStats(campaignIDs []string) (string, error)
 	GetCampaignDetail(campaignID string) (string, error)
 	GetCampaignDetailByAlias(alias string) (string, error)
 	GetCampaignReport(campaignID string) (string, error)
@@ -304,13 +304,12 @@ func (sdk *Sdk) UpdateCampaignTrigger(id string, body *CampaignTriger) (string, 
 }
 
 // GetCampaignsStats return number of campaign in campaigns amount
-func (sdk *Sdk) GetCampaignsStats(campaignIDs []string, isUniqueContact bool) (string, error) {
+func (sdk *Sdk) GetCampaignsStats(campaignIDs []string) (string, error) {
 	sdkC := sdk.connect
 	p := map[string]string{}
 	if len(campaignIDs) > 0 {
 		p["id"] = strings.Join(campaignIDs, ",")
 	}
-	p["is_unique_contact"] = fmt.Sprintf("%t", isUniqueContact)
 
 	campaignStat := fmt.Sprintf("/api/campaigns/stat")
 
