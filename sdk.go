@@ -47,6 +47,7 @@ type ISdk interface {
 	GetContacts(q string, page, limit string) (string, error)
 	DeleteTagsByContacts(body *ContactsTags) (string, error)
 	AddTagsByContacts(body *ContactsTags) (string, error)
+	GetContactsTags(tags string, searchKeyword string, page, limit string) (string, error)
 }
 
 // Sdk is struct for PAM client
@@ -452,4 +453,17 @@ func (sdk *Sdk) UpdateMessagePushNotification(
 	}
 
 	return res, resultStr, nil
+}
+
+// GetContactsTags return contact list
+func (sdk *Sdk) GetContactsTags(tags string, searchKeyword string, page, limit string) (string, error) {
+	sdkC := sdk.connect
+	params := map[string]string{
+		"q":     searchKeyword,
+		"page":  page,
+		"limit": limit,
+		"tags":  tags,
+	}
+
+	return sdkC.rq.Get("/api/contacts/tag/multiple", params)
 }
