@@ -44,7 +44,7 @@ type ISdk interface {
 	CreateContact(file string, fieldMatch string, tags string) (string, error)
 	CreateContactWithBody(body string) (string, error)
 	UpdateContactAttr(contactID string, body *Contact) (string, error)
-	GetContacts(q string, page, limit string) (string, error)
+	GetContacts(q string, field string, page, limit string) (string, error)
 	DeleteTagsByContacts(body *ContactsTags) (string, error)
 	AddTagsByContacts(body *ContactsTags) (string, error)
 	GetContactsTags(tags string, searchKeyword string, page, limit string) (string, error)
@@ -373,10 +373,11 @@ func (sdk *Sdk) UpdateContactAttr(contactID string, body *Contact) (string, erro
 }
 
 // GetContacts return contact list
-func (sdk *Sdk) GetContacts(searchKeyword string, page, limit string) (string, error) {
+func (sdk *Sdk) GetContacts(searchKeyword string, field, page, limit string) (string, error) {
 	sdkC := sdk.connect
 	params := map[string]string{
 		"q":     searchKeyword,
+		"field": field,
 		"page":  page,
 		"limit": limit,
 	}
