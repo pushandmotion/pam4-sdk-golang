@@ -56,11 +56,6 @@ type SegmentTrigger struct {
 	Conditions []interface{} `json:"conditions"`
 }
 
-// Contact struct for information contact
-type Contact struct {
-	Attrs map[string]interface{} `json:"attrs"`
-}
-
 // ContactsTags struct for delete tags by contacts
 type ContactsTags struct {
 	Contacts []string `json:"contact_ids"`
@@ -236,4 +231,27 @@ type MediaResMessage struct {
 	MediaTypeID string                 `json:"media_type_id"`
 	MediaType   *MediaTypeResMessage   `json:"media_type"`
 	Setting     map[string]interface{} `json:"setting,omitempty"`
+}
+
+type Contact struct {
+	Attrs struct {
+		CustomerID   string `json:"customer-id"`
+		EcomMemberID string `json:"ecom-member-id"`
+		InfobipTesco string `json:"infobip-tesco"`
+		Mobile       string `json:"mobile"`
+		ThirdPartyID string `json:"third-party-id"`
+	} `json:"attrs"`
+	ContactID  string      `json:"contact_id"`
+	CreatedAt  interface{} `json:"created_at"`
+	CustomerID string      `json:"customer_id"`
+	Email      string      `json:"email"`
+	FacebookID string      `json:"facebook_id"`
+	Firstname  string      `json:"firstname"`
+	LastAccess interface{} `json:"last_access"`
+	Lastname   string      `json:"lastname"`
+	LineID     string      `json:"line_id"`
+	MergeTo    string      `json:"merge_to"`
+	Mobile     string      `json:"mobile"`
+	Tags       string      `json:"tags"`
+	UpdateTo   interface{} `json:"update_to"`
 }
